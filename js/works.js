@@ -9,7 +9,7 @@
  *
  *  이미지 경로:
  *    thumb:  "img/works/engname/thumb.jpg"
- *    video: "img/works/anim-001/video.mp4"  
+ *    video: "youtube:dQw4w9WgXcQ" // youtube.com/watch?v=dQw4w9WgXcQ <<이거 
  *    images: ["img/works/engname/01.jpg", ...]
  * =====================================================
  */
@@ -121,7 +121,7 @@ const WORKS = [
     title: "컬트 오브 더 램 팬 애니메이션",  title_en: "cotl fan mv",
     year: 2024,
     thumb: "img/works/2Danim/nakama/thumb.png",
-    video:"img/works/2Danim/nakama/anim.mp4",
+    video:"youtube:W5loeS9D1Q4",
     images: [""],
     description: "",  description_en: "",
   },
@@ -133,7 +133,7 @@ const WORKS = [
     title: "루프더 룸 팬 애니메이션",  title_en: "looping the rooms fan mv",
     year: 2026,
     thumb: "img/works/3Danim/looptheroom/thumb.png",
-    video: "img/works/3Danim/looptheroom/anim.mp4",
+    video: "youtube:RI6efeLJ37U",
     images: [""],
     description: "",  description_en: "",
   },

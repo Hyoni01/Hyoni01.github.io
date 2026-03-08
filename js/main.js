@@ -201,12 +201,28 @@ function renderImage() {
     + (validImgs.length > 1 ? `  (${currentImageIndex + 1} / ${validImgs.length})` : '');
 
   if (work.video && currentImageIndex === 0 && validImgs.length === 0) {
-    lbScroll.innerHTML = `
-      <div class="lb-img">
-        <video src="${work.video}" controls autoplay loop playsinline
-               style="max-width:100%;max-height:100%;"></video>
-      </div>`;
+    const isYoutube = work.video.startsWith('youtube:');
+
+    if (isYoutube) {
+      const ytId = work.video.replace('youtube:', '');
+      lbScroll.innerHTML = `
+        <div class="lb-img">
+          <iframe
+            src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0&modestbranding=1"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            style="width:100%;height:100%;border:none;aspect-ratio:16/9;max-height:100%;">
+          </iframe>
+        </div>`;
+    } else {
+      lbScroll.innerHTML = `
+        <div class="lb-img">
+          <video src="${work.video}" controls autoplay loop playsinline
+                style="max-width:100%;max-height:100%;"></video>
+        </div>`;
+    }
     return;
+  
   }
 
   const src = validImgs[currentImageIndex] || '';
