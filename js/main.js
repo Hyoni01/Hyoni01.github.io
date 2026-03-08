@@ -309,3 +309,9 @@ document.querySelectorAll('.nav-dropdown a').forEach(a => {
 document.querySelectorAll('[data-kr][data-en]').forEach(el => {
   el.textContent = LANG === 'en' ? el.dataset.en : el.dataset.kr;
 });
+
+// 현재 언어 버튼 active 표시
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  const isActive = (btn.dataset.lang || btn.textContent.trim().toLowerCase()) === LANG;
+  btn.classList.toggle('active', isActive);
+});

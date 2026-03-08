@@ -118,7 +118,7 @@ const WORKS = [
   {
     id: "anim-001",
     category: "2d-animation",
-    title: "컬트 오브 더 램 팬 애니메이션",  title_en: "cotl fan mv",
+    title: "컬트 오브 더 램 팬애니메이션",  title_en: "cotl fan mv",
     year: 2024,
     thumb: "img/works/2Danim/nakama/thumb.png",
     video:"youtube:W5loeS9D1Q4",
@@ -130,7 +130,7 @@ const WORKS = [
   {
     id: "anim-002",
     category: "3d-animation",
-    title: "루프더 룸 팬 애니메이션",  title_en: "looping the rooms fan mv",
+    title: "루프 더 룸 팬애니메이션",  title_en: "looping the rooms fan mv",
     year: 2026,
     thumb: "img/works/3Danim/looptheroom/thumb.png",
     video: "youtube:RI6efeLJ37U",

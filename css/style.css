@@ -539,19 +539,51 @@ footer a:hover { color: var(--accent); }
    ===================================================== */
 
 @media (max-width: 768px) {
-  .nav-center { gap: 0; }
+    nav {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.4rem 0.6rem;
+    gap: 0.3rem;
+  }
+  .nav-center {
+    order: 2;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .nav-right {
+    position: static;  /* absolute 해제 */
+    order: 1;
+    width: 100%;
+    justify-content: flex-end;
+  }
   .nav-btn    { padding: .35em .6em; font-size: .75rem; }
   .about-wrap { grid-template-columns: 1fr; }
   .work-grid { --gap: 0.3rem; }
   .about-portrait { position: static; max-width: 180px; aspect-ratio: 1/1; }
   .work-meta-title { font-size: .75rem; }
   .work-meta-tag   { font-size: .55rem; }
+
 }
 
 @media (max-width: 480px) {
 
 }
 
+@media (hover: none) {
+  .work-card:hover,
+  .work-card:nth-child(even):hover,
+  .work-card:nth-child(odd):hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .work-card:hover .work-thumb img,
+  .work-card--illu:hover .work-full-img img {
+    transform: none;
+  }
+  .work-card--illu:hover { box-shadow: none; }
+}
 
 /* ── 일러스트 전용 카드: 이미지 풀 사이즈 ── */
 .work-card--illu {
@@ -591,3 +623,8 @@ footer a:hover { color: var(--accent); }
 }
 .lb-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.28); }
 .lb-nav-btn:disabled { opacity: 0.15; cursor: default; }
+
+.lang-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
