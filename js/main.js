@@ -234,9 +234,14 @@ function renderImage() {
 function closeLightbox() {
   if (!lbOverlay) return;
 
+  // 일반 video 정지
   const video = lbScroll.querySelector('video');
   if (video) video.pause();
-    
+
+  // 유튜브 iframe 정지 (src 초기화)
+  const iframe = lbScroll.querySelector('iframe');
+  if (iframe) iframe.src = '';
+
   lbOverlay.classList.remove('open');
   document.body.style.overflow = '';
   if (lbObserver) { lbObserver.disconnect(); lbObserver = null; }
