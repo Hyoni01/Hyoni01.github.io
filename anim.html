@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyoni — animation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <a href="index.html" class="site-hero-logo">
+    <img src="img/hero.png" alt="Hyoni" />
+  </a>
+<nav>
+  <div class="nav-center">
+    <div class="nav-item">
+      <a href="index.html" class="nav-btn" data-kr="일러스트" data-en="Illustration">일러스트</a>
+      <div class="nav-dropdown">
+        <a href="index.html?cat=all"        data-kr="전체"  data-en="All">전체</a>
+        <a href="index.html?cat=commission" data-kr="커미션" data-en="Commission">커미션</a>
+        <a href="index.html?cat=personal"   data-kr="개인작" data-en="Personal">개인작</a>
+        <a href="index.html?cat=commercial" data-kr="상업작" data-en="Commercial">상업작</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="anim.html" class="nav-btn" data-kr="애니메이션" data-en="Animation">애니메이션</a>
+      <div class="nav-dropdown">
+        <a href="anim.html?cat=all"          data-kr="전체" data-en="All">전체</a>
+        <a href="anim.html?cat=2d-animation" data-kr="2D"   data-en="2D">2D</a>
+        <a href="anim.html?cat=3d-animation" data-kr="3D"   data-en="3D">3D</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a href="game.html" class="nav-btn" data-kr="게임" data-en="Game">게임</a>
+    </div>
+    <div class="nav-item">
+      <a href="about.html" class="nav-btn" data-kr="About" data-en="About">About</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="?lang=en" class="lang-btn">EN</a>
+    <a href="?lang=kr" class="lang-btn">KR</a>
+  </div>
+</nav>
+
+  <div class="page-wrap">
+    <div class="sub-nav">
+      <button class="sub-btn" data-cat="all">전체</button>
+      <button class="sub-btn" data-cat="2d-animation">2D</button>
+      <button class="sub-btn" data-cat="3d-animation">3D</button>
+    </div>
+    <div class="grid-wrap">
+      <div class="work-grid" id="work-grid"></div>
+    </div>
+  </div>
+
+  <div class="lb-overlay" id="lb-overlay">
+    <div class="lb-head">
+      <div class="lb-title" id="lb-title"></div>
+      <div class="lb-tag"   id="lb-tag"></div>
+    </div>
+    <div class="lb-scroll" id="lb-scroll"></div>
+    <div class="lb-desc" id="lb-desc"></div>
+    <button class="lb-close" id="lb-close">✕</button>
+    <div class="lb-nav">
+      <button class="lb-nav-btn" id="lb-prev">&#8592;</button>
+      <button class="lb-nav-btn" id="lb-next">&#8594;</button>
+    </div>
+  </div>
+
+  <footer>
+    <a></a>
+    <span>©2024-2026 by Hyoni All Right reserved</span>
+    <a></a>
+  </footer>
+
+  <script src="js/works.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const PAGE_CATS = ['2d-animation', '3d-animation'];
+    const initCat  = urlParams.get('cat') || 'all';
+    const initCats = initCat === 'all' ? PAGE_CATS : [initCat];
+
+    document.querySelectorAll('.sub-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.cat === initCat);
+    });
+
+    renderGrid('#work-grid', initCats);
+    initCatFilter(PAGE_CATS);
+  </script>
+</body>
+</html>

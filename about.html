@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyoni — About</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <a href="index.html" class="site-hero-logo">
+    <img src="img/hero.png" alt="Hyoni" />
+  </a>
+
+  <nav>
+    <div class="nav-center">
+      <div class="nav-item">
+        <a href="index.html" class="nav-btn"
+           data-kr="일러스트" data-en="Illustration">일러스트</a>
+        <div class="nav-dropdown">
+          <a href="index.html?cat=all"        data-kr="전체"  data-en="All">전체</a>
+          <a href="index.html?cat=commission" data-kr="커미션" data-en="Commission">커미션</a>
+          <a href="index.html?cat=personal"   data-kr="개인작" data-en="Personal">개인작</a>
+          <a href="index.html?cat=commercial" data-kr="상업작" data-en="Commercial">상업작</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="anim.html" class="nav-btn"
+           data-kr="애니메이션" data-en="Animation">애니메이션</a>
+        <div class="nav-dropdown">
+          <a href="anim.html?cat=all"          data-kr="전체" data-en="All">전체</a>
+          <a href="anim.html?cat=2d-animation" data-kr="2D"   data-en="2D">2D</a>
+          <a href="anim.html?cat=3d-animation" data-kr="3D"   data-en="3D">3D</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="game.html" class="nav-btn"
+           data-kr="게임" data-en="Game">게임</a>
+      </div>
+      <div class="nav-item">
+        <a href="about.html" class="nav-btn active"
+           data-kr="About" data-en="About">About</a>
+      </div>
+    </div>
+    <div class="nav-right">
+      <a href="?lang=en" class="lang-btn">EN</a>
+      <a href="?lang=kr" class="lang-btn">KR</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="about-wrap">
+
+      <div>
+        <div class="about-portrait">
+          <img src="img/사진대용.png" alt="Hyoni" />
+        </div>
+      </div>
+
+      <div>
+        <h1 class="about-name"
+            data-kr="안녕하세요!" data-en="Hello!">안녕하세요!</h1>
+
+        <p class="about-bio"
+           data-kr="Illustration, animation, games&#10;&#10;한국에서 활동하며 일러스트레이션 외에도 3D 애니메이션과 게임 개발, 영상 편집을 공부하고 있어요."
+           data-en="Illustration, animation, games&#10;&#10;Based in Korea, I create illustrations and also study 3D animation, game development, and video editing.">
+          Illustration, animation, games<br><br>
+          서울에서 활동하며 일러스트레이션 외에도 3D 애니메이션과 게임 개발, 영상 편집을 공부하고 있어요.
+        </p>
+
+        <div class="skill-tags" style="margin-bottom: 2.4rem;">
+          <span class="skill-tag">Clip Studio</span>
+          <span class="skill-tag">Adobe Illustrator</span>
+          <span class="skill-tag">Photoshop</span>
+          <span class="skill-tag"
+                data-kr="캐릭터 디자인" data-en="Character Design">캐릭터 디자인</span>
+          <span class="skill-tag"
+                data-kr="컨셉 아트" data-en="Concept Art">컨셉 아트</span>
+          <span class="skill-tag">Blender</span>
+          <span class="skill-tag">After Effects</span>
+          <span class="skill-tag">Premiere Pro</span>
+        </div>
+
+        <p class="about-section-label">Contact</p>
+        <div class="contact-links">
+          <a href="mailto:jamdalgee@gmail.com" class="contact-link">
+            <i class="fa-regular fa-envelope"></i>
+            jamdalgee@gmail.com
+          </a>
+          <a href="https://www.instagram.com/hyoni_illust/" target="_blank" class="contact-link">
+            <i class="fa-brands fa-instagram"></i>
+            hyoni_illust
+          </a>
+          <a href="https://www.youtube.com/@Hyoni-anim" target="_blank" class="contact-link">
+              <i class="fa-brands fa-youtube"></i>
+              hyoni-anim
+            </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <a></a>
+    <span>©2024-2026 by Hyoni All Right reserved</span>
+    <a></a>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    /* about 페이지 전용: bio는 줄바꿈 처리 */
+    const bioEl = document.querySelector('.about-bio');
+    if (bioEl) {
+      const text = LANG === 'en' ? bioEl.dataset.en : bioEl.dataset.kr;
+      bioEl.innerHTML = text.replace(/\n/g, '<br>');
+    }
+  </script>
+
+</body>
+</html>
