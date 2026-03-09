@@ -551,8 +551,9 @@ footer a:hover { color: var(--accent); }
     justify-content: center;
     flex-wrap: wrap;
   }
-    .nav-dropdown{
-    display: none;
+  .nav-item:hover .nav-dropdown{
+    opacity: 0;
+    pointer-events: none;
     }
   .nav-right {
     position: static;  /* absolute 해제 */
