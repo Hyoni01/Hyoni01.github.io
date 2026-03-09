@@ -16,19 +16,28 @@ const CAT_LABEL = {
     all: '전체', commission: '커미션', personal: '개인작',
     commercial: '상업작', '2d-animation': '2D애니메이션',
     '3d-animation': '3D애니메이션', game: '게임',
+    character: '캐릭터',
+    'cha-commission': '캐릭터 커미션',
+    'cha-personal':   '캐릭터 개인작',
+    'cha-commercial': '캐릭터 상업작',
     noImage: '이미지 준비 중',
   },
   en: {
     all: 'All', commission: 'Commission', personal: 'Personal',
     commercial: 'Commercial', '2d-animation': '2D Animation',
     '3d-animation': '3D Animation', game: 'Game',
+    character: 'Character',
+    'cha-commission': 'Cha Commission',
+    'cha-personal':   'Cha Personal',
+    'cha-commercial': 'Cha Commercial',
     noImage: 'Coming soon',
   },
 };
 
+
 function catLabel(cat) { return CAT_LABEL[LANG][cat] || cat; }
 
-const ILLU_CATS = ['commission', 'personal', 'commercial'];
+const ILLU_CATS = ['commission', 'personal', 'commercial', 'character', 'cha-commission', 'cha-personal', 'cha-commercial'];
 function isIllu(cat) { return ILLU_CATS.includes(cat); }
 
 let currentList  = [];
@@ -98,9 +107,10 @@ function renderGrid(target, cats) {
   currentList = WORKS
     .filter(w => cats.includes(w.category))
     .sort((a, b) => {
-      const numA = parseInt(a.id.split('-')[1], 10);
-      const numB = parseInt(b.id.split('-')[1], 10);
-      return numB - numA;
+      if (b.year !== a.year) return b.year - a.year;
+      const orderA = a.order ?? 0;
+      const orderB = b.order ?? 0;
+      return orderB - orderA; // order 높을수록 최신
     });
 
   if (currentList.length === 0) {
