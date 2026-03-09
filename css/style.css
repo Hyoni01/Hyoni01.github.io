@@ -583,6 +583,13 @@ footer a:hover { color: var(--accent); }
     transform: none;
   }
   .work-card--illu:hover { box-shadow: none; }
+
+    .nav-item.touch-open .nav-dropdown {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+  }
+
 }
 
 /* ── 일러스트 전용 카드: 이미지 풀 사이즈 ── */

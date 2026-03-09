@@ -315,3 +315,24 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
   const isActive = (btn.dataset.lang || btn.textContent.trim().toLowerCase()) === LANG;
   btn.classList.toggle('active', isActive);
 });
+
+/* ── 모바일 nav 드롭다운 터치 ── */
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('touchstart', e => {
+    e.stopPropagation();
+    const isOpen = item.classList.contains('touch-open');
+
+    // 모든 드롭다운 닫기
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('touch-open'));
+
+    // 현재 항목 토글
+    if (!isOpen) item.classList.add('touch-open');
+  }, { passive: true });
+});
+
+// 다른 곳 터치 시 닫기
+document.addEventListener('touchstart', e => {
+  if (!e.target.closest('.nav-item')) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('touch-open'));
+  }
+}, { passive: true });
