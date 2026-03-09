@@ -239,7 +239,7 @@ const WORKS = [
   },
 
     {
-  id: "chara-005",
+  id: "chara-006",
   category: "cha-personal",
   title:"bee and puppy cat",
   order: 0,
@@ -250,7 +250,7 @@ const WORKS = [
   },
 
   {
-  id: "chara-005",
+  id: "chara-007",
   category: "cha-personal",
   title:"나,조립법", title_en:"Me, Build Guide",
   order: 0,
