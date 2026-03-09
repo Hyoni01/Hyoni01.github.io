@@ -10,47 +10,44 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-  
+
   <a href="index.html" class="site-hero-logo">
-  <img src="img/hero.png" alt="Hyoni" />
+    <img src="img/hero.png" alt="Hyoni" />
   </a>
 
-  <!-- ===================== NAV ===================== -->
   <nav>
-  <div class="nav-center">
-    <div class="nav-item">
-      <a href="index.html" class="nav-btn" data-kr="일러스트" data-en="Illustration">일러스트</a>
-      <div class="nav-dropdown">
-        <a href="index.html"        data-kr="전체"  data-en="All">전체</a>
-        <a href="index.html?cat=commission" data-kr="커미션" data-en="Commission">커미션</a>
-        <a href="index.html?cat=personal"   data-kr="개인작" data-en="Personal">개인작</a>
-        <a href="index.html?cat=commercial" data-kr="상업작" data-en="Commercial">상업작</a>
+    <div class="nav-center">
+      <div class="nav-item">
+        <a href="index.html" class="nav-btn" data-kr="일러스트" data-en="Illustration">일러스트</a>
+        <div class="nav-dropdown">
+          <a href="index.html"                data-kr="전체"  data-en="All">전체</a>
+          <a href="index.html?cat=commission" data-kr="커미션" data-en="Commission">커미션</a>
+          <a href="index.html?cat=personal"   data-kr="개인작" data-en="Personal">개인작</a>
+          <a href="index.html?cat=commercial" data-kr="상업작" data-en="Commercial">상업작</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="anim.html" class="nav-btn" data-kr="애니메이션" data-en="Animation">애니메이션</a>
+        <div class="nav-dropdown">
+          <a href="anim.html"                  data-kr="전체" data-en="All">전체</a>
+          <a href="anim.html?cat=2d-animation" data-kr="2D"   data-en="2D">2D</a>
+          <a href="anim.html?cat=3d-animation" data-kr="3D"   data-en="3D">3D</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="game.html" class="nav-btn" data-kr="게임" data-en="Game">게임</a>
+      </div>
+      <div class="nav-item">
+        <a href="about.html" class="nav-btn" data-kr="About" data-en="About">About</a>
       </div>
     </div>
-    <div class="nav-item">
-      <a href="anim.html" class="nav-btn" data-kr="애니메이션" data-en="Animation">애니메이션</a>
-      <div class="nav-dropdown">
-        <a href="anim.html?cat=all"          data-kr="전체" data-en="All">전체</a>
-        <a href="anim.html?cat=2d-animation" data-kr="2D"   data-en="2D">2D</a>
-        <a href="anim.html?cat=3d-animation" data-kr="3D"   data-en="3D">3D</a>
-      </div>
+    <div class="nav-right">
+      <a href="?lang=en" class="lang-btn">EN</a>
+      <a href="?lang=kr" class="lang-btn">KR</a>
     </div>
-    <div class="nav-item">
-      <a href="game.html" class="nav-btn" data-kr="게임" data-en="Game">게임</a>
-    </div>
-    <div class="nav-item">
-      <a href="about.html" class="nav-btn" data-kr="About" data-en="About">About</a>
-    </div>
-  </div>
-  <div class="nav-right">
-    <a href="?lang=en" class="lang-btn">EN</a>
-    <a href="?lang=kr" class="lang-btn">KR</a>
-  </div>
-</nav>
+  </nav>
 
-  <!-- ===================== SUB NAV ===================== -->
   <div class="page-wrap">
     <div class="sub-nav">
       <button class="sub-btn active" data-cat="all"        data-kr="전체"  data-en="All">전체</button>
@@ -58,40 +55,25 @@
       <button class="sub-btn"        data-cat="personal"   data-kr="개인작" data-en="Personal">개인작</button>
       <button class="sub-btn"        data-cat="commercial" data-kr="상업작" data-en="Commercial">상업작</button>
     </div>
-
-    <!-- ===================== GRID ===================== -->
     <div class="grid-wrap">
       <div class="work-grid" id="work-grid"></div>
     </div>
   </div>
 
-  <!-- ===================== LIGHTBOX ===================== -->
-
-<div class="lb-overlay" id="lb-overlay">
-
-  <!-- 상단: 제목 + 년도 -->
-  <div class="lb-head">
-    <div class="lb-title" id="lb-title"></div>
-    <div class="lb-tag"   id="lb-tag"></div>
+  <div class="lb-overlay" id="lb-overlay">
+    <div class="lb-head">
+      <div class="lb-title" id="lb-title"></div>
+      <div class="lb-tag"   id="lb-tag"></div>
+    </div>
+    <div class="lb-scroll" id="lb-scroll"></div>
+    <div class="lb-desc" id="lb-desc"></div>
+    <button class="lb-close" id="lb-close">✕</button>
+    <div class="lb-nav">
+      <button class="lb-nav-btn" id="lb-prev">&#8592;</button>
+      <button class="lb-nav-btn" id="lb-next">&#8594;</button>
+    </div>
   </div>
 
-  <!-- 중앙: 이미지 스크롤 영역 -->
-  <div class="lb-scroll" id="lb-scroll"></div>
-
-  <!-- 하단: 작품 설명 -->
-  <div class="lb-desc" id="lb-desc"></div>
-
-  <!-- X 닫기 버튼 (우상단 고정) -->
-  <button class="lb-close" id="lb-close">✕</button>
-
-  <!-- ← → 이전/다음 버튼 (좌우 중앙 고정) -->
-  <div class="lb-nav">
-    <button class="lb-nav-btn" id="lb-prev">&#8592;</button>
-    <button class="lb-nav-btn" id="lb-next">&#8594;</button>
-  </div>
-
-</div>
-  <!-- ===================== FOOTER ===================== -->
   <footer>
     <a></a>
     <span>©2024-2026 by Hyoni All Right reserved</span>
@@ -101,24 +83,16 @@
   <script src="js/works.js"></script>
   <script src="js/main.js"></script>
   <script>
-    /* 이 페이지의 카테고리 목록 */
     const PAGE_CATS = ['commission', 'personal', 'commercial'];
+    const initCat   = urlParams.get('cat') || 'all';
+    const initCats  = initCat === 'all' ? PAGE_CATS : [initCat];
 
-    /* URL 파라미터로 초기 카테고리 결정 */
-    const initCat = urlParams.get('cat') || 'all';
-    const initCats = initCat === 'all' ? PAGE_CATS : [initCat];
-
-    /* sub-nav 초기 active */
     document.querySelectorAll('.sub-btn').forEach(b => {
       b.classList.toggle('active', b.dataset.cat === initCat);
     });
 
-    /* 렌더 */
     renderGrid('#work-grid', initCats);
-
-    /* sub-btn 클릭 필터 */
     initCatFilter(PAGE_CATS);
   </script>
-
 </body>
 </html>

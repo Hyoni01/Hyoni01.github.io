@@ -110,12 +110,9 @@ function renderGrid(target, cats) {
 
   const COLS = getColCount();
 
-  // 가로 순서(오른쪽→왼쪽)로 컬럼에 배분
-  // row 0: item[0]→col[COLS-1], item[1]→col[COLS-2], ...
   const columns = Array.from({ length: COLS }, () => []);
   currentList.forEach((work, i) => {
-    const posInRow = i % COLS;
-    const col = posInRow; // 왼쪽 컬럼부터 채움
+    const col = i % COLS;
     columns[col].push(work);
   });
 
@@ -145,7 +142,7 @@ function initCatFilter(allCats) {
         const path     = url.pathname.split('/').pop();
         const aCat     = url.searchParams.get('cat');
         const samePage = path === (location.pathname.split('/').pop() || 'index.html');
-        const sameCat  = aCat === cat || (aCat === 'all' && cat === 'all');
+        const sameCat  = aCat === cat || (!aCat && cat === 'all');
         a.classList.toggle('active', samePage && sameCat);
       });
     });
@@ -202,7 +199,6 @@ function renderImage() {
 
   if (work.video && currentImageIndex === 0 && validImgs.length === 0) {
     const isYoutube = work.video.startsWith('youtube:');
-
     if (isYoutube) {
       const ytId = work.video.replace('youtube:', '');
       lbScroll.innerHTML = `
@@ -222,7 +218,6 @@ function renderImage() {
         </div>`;
     }
     return;
-  
   }
 
   const src = validImgs[currentImageIndex] || '';
@@ -234,11 +229,9 @@ function renderImage() {
 function closeLightbox() {
   if (!lbOverlay) return;
 
-  // 일반 video 정지
   const video = lbScroll.querySelector('video');
   if (video) video.pause();
 
-  // 유튜브 iframe 정지 (src 초기화)
   const iframe = lbScroll.querySelector('iframe');
   if (iframe) iframe.src = '';
 
@@ -267,7 +260,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' && currentIndex < currentList.length - 1) { currentIndex++; renderLightbox(); }
 });
 
-/* ── 마우스 휠: 같은 작품 내 이미지 순차 전환 ── */
+/* ── 마우스 휠 ── */
 let wheelLocked = false;
 if (lbOverlay) {
   lbOverlay.addEventListener('wheel', e => {
@@ -292,10 +285,11 @@ if (lbOverlay) {
   }, { passive: false });
 }
 
-/* ── nav 드롭다운 현재 페이지·카테고리 active 표시 ── */
+/* ── nav 드롭다운 + nav-btn active 표시 ── */
 const currentPath = location.pathname.split('/').pop() || 'index.html';
 const currentCat  = urlParams.get('cat');
 
+// 드롭다운 링크 active
 document.querySelectorAll('.nav-dropdown a').forEach(a => {
   const url      = new URL(a.href, location.href);
   const path     = url.pathname.split('/').pop();
@@ -305,12 +299,20 @@ document.querySelectorAll('.nav-dropdown a').forEach(a => {
   a.classList.toggle('active', samePage && sameCat);
 });
 
-/* ── nav / sub-nav 텍스트 언어 적용 ── */
+// nav-btn 자체 active (현재 페이지 기준)
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  if (!btn.href) return;
+  const url  = new URL(btn.href, location.href);
+  const path = url.pathname.split('/').pop();
+  btn.classList.toggle('active', path === currentPath);
+});
+
+/* ── 언어 텍스트 적용 ── */
 document.querySelectorAll('[data-kr][data-en]').forEach(el => {
   el.textContent = LANG === 'en' ? el.dataset.en : el.dataset.kr;
 });
 
-// 현재 언어 버튼 active 표시
+// 언어 버튼 active
 document.querySelectorAll('.lang-btn').forEach(btn => {
   const isActive = (btn.dataset.lang || btn.textContent.trim().toLowerCase()) === LANG;
   btn.classList.toggle('active', isActive);
@@ -321,16 +323,11 @@ document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('touchstart', e => {
     e.stopPropagation();
     const isOpen = item.classList.contains('touch-open');
-
-    // 모든 드롭다운 닫기
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('touch-open'));
-
-    // 현재 항목 토글
     if (!isOpen) item.classList.add('touch-open');
   }, { passive: true });
 });
 
-// 다른 곳 터치 시 닫기
 document.addEventListener('touchstart', e => {
   if (!e.target.closest('.nav-item')) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('touch-open'));
