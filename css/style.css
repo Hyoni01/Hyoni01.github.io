@@ -589,6 +589,9 @@ footer a:hover { color: var(--accent); }
     pointer-events: all;
     transform: translateX(-50%) translateY(0);
   }
+  .nav-dropdown{
+    display: none;
+  }
 
 }
 
