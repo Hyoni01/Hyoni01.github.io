@@ -252,7 +252,7 @@ const WORKS = [
   {
   id: "chara-005",
   category: "cha-personal",
-  title:"robot",
+  title:"나,조립법", title_en:"Me, Build Guide",
   order: 0,
   year: 2021,
   thumb:"img/works/chara/7/7.jpg",
