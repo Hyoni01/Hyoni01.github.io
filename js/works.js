@@ -187,7 +187,7 @@ const WORKS = [
   {
   id: "chara-001",
   category: "cha-personal",
-  title: "Untitled",
+  title:"무제", title_en: "Untitled",
   order: 1,
   year: 2026,
   thumb:"img/works/chara/1/1.png",
@@ -198,7 +198,7 @@ const WORKS = [
   {
   id: "chara-002",
   category: "cha-personal",
-  title:"four bosses",
+  title:"네명의 보스들" , title_en:"four bosses",
   order: 2,
   year: 2026,
   thumb:"img/works/chara/2/2.png",
@@ -209,7 +209,7 @@ const WORKS = [
   {
   id: "chara-003",
   category: "cha-personal",
-  title:"children",
+  title:"아이들", title_en:"children",
   order: 3,
   year: 2026,
   thumb:"img/works/chara/3/3.png",
@@ -220,7 +220,7 @@ const WORKS = [
   {
   id: "chara-004",
   category: "cha-personal",
-  title:"OC",
+  title:"오리지널 캐릭터1",title_en:"OC",
   order: 4,
   year: 2026,
   thumb:"img/works/chara/4/4.png",
@@ -230,7 +230,7 @@ const WORKS = [
   {
   id: "chara-005",
   category: "cha-personal",
-  title:"robot",
+  title: "로봇", title_en:"robot",
   order: 5,
   year: 2026,
   thumb:"img/works/chara/5/5.png",
