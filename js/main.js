@@ -34,7 +34,6 @@ const CAT_LABEL = {
   },
 };
 
-
 function catLabel(cat) { return CAT_LABEL[LANG][cat] || cat; }
 
 const ILLU_CATS = ['commission', 'personal', 'commercial', 'character', 'cha-commission', 'cha-personal', 'cha-commercial'];
@@ -110,7 +109,7 @@ function renderGrid(target, cats) {
       if (b.year !== a.year) return b.year - a.year;
       const orderA = a.order ?? 0;
       const orderB = b.order ?? 0;
-      return orderB - orderA; // order 높을수록 최신
+      return orderB - orderA;
     });
 
   if (currentList.length === 0) {
@@ -180,6 +179,9 @@ function openLightbox(id) {
   renderLightbox();
   document.body.style.overflow = 'hidden';
   lbOverlay.classList.add('open');
+
+  // 뒤로가기 히스토리 추가
+  history.pushState({ lightbox: true }, '');
 }
 
 function renderLightbox() {
@@ -204,8 +206,7 @@ function renderImage() {
   const work  = currentList[currentIndex];
   const title = LANG === 'en' ? work.title_en : work.title;
 
-  lbTagEl.textContent = catLabel(work.category) + ' · ' + work.year
-    + (validImgs.length > 1 ? `  (${currentImageIndex + 1} / ${validImgs.length})` : '');
+  lbTagEl.textContent = catLabel(work.category) + ' · ' + work.year;
 
   if (work.video && currentImageIndex === 0 && validImgs.length === 0) {
     const isYoutube = work.video.startsWith('youtube:');
@@ -227,26 +228,42 @@ function renderImage() {
                 style="max-width:100%;max-height:100%;"></video>
         </div>`;
     }
+    updateDotsAndCounter();
     return;
   }
-
-  // 점 인디케이터 업데이트
-const dotsEl = document.getElementById('lb-dots');
-if (dotsEl) {
-  if (validImgs.length > 1) {
-    dotsEl.innerHTML = validImgs.map((_, i) =>
-      `<div class="lb-dot ${i === currentImageIndex ? 'active' : ''}"></div>`
-    ).join('');
-    dotsEl.style.display = 'flex';
-  } else {
-    dotsEl.style.display = 'none';
-  }
-}
 
   const src = validImgs[currentImageIndex] || '';
   lbScroll.innerHTML = src
     ? `<div class="lb-img"><img src="${src}" alt="${title}" loading="eager"></div>`
     : `<div class="lb-img-placeholder">${CAT_LABEL[LANG].noImage}</div>`;
+
+  updateDotsAndCounter();
+}
+
+function updateDotsAndCounter() {
+  // 점 인디케이터
+  const dotsEl = document.getElementById('lb-dots');
+  if (dotsEl) {
+    if (validImgs.length > 1) {
+      dotsEl.innerHTML = validImgs.map((_, i) =>
+        `<div class="lb-dot ${i === currentImageIndex ? 'active' : ''}"></div>`
+      ).join('');
+      dotsEl.style.display = 'flex';
+    } else {
+      dotsEl.style.display = 'none';
+    }
+  }
+
+  // 이미지 장수 표시 (이미지 바로 아래)
+  const imgCountEl = document.getElementById('lb-img-count');
+  if (imgCountEl) {
+    if (validImgs.length > 1) {
+      imgCountEl.textContent = `${currentImageIndex + 1} / ${validImgs.length}`;
+      imgCountEl.style.display = 'block';
+    } else {
+      imgCountEl.style.display = 'none';
+    }
+  }
 }
 
 function closeLightbox() {
@@ -270,17 +287,30 @@ if (lbPrev) lbPrev.addEventListener('click', () => {
 if (lbNext) lbNext.addEventListener('click', () => {
   if (currentIndex < currentList.length - 1) { currentIndex++; renderLightbox(); }
 });
-if (lbCloseEl) lbCloseEl.addEventListener('click', closeLightbox);
+if (lbCloseEl) lbCloseEl.addEventListener('click', () => {
+  closeLightbox();
+  history.back();
+});
 if (lbOverlay) lbOverlay.addEventListener('click', e => {
-  if (e.target === lbOverlay) closeLightbox();
+  if (e.target === lbOverlay) {
+    closeLightbox();
+    history.back();
+  }
 });
 
 /* ── 키보드 ── */
 document.addEventListener('keydown', e => {
   if (!lbOverlay?.classList.contains('open')) return;
-  if (e.key === 'Escape')     closeLightbox();
+  if (e.key === 'Escape')     { closeLightbox(); history.back(); }
   if (e.key === 'ArrowLeft'  && currentIndex > 0)                      { currentIndex--; renderLightbox(); }
   if (e.key === 'ArrowRight' && currentIndex < currentList.length - 1) { currentIndex++; renderLightbox(); }
+});
+
+/* ── 모바일 뒤로가기 버튼으로 라이트박스 닫기 ── */
+window.addEventListener('popstate', e => {
+  if (lbOverlay?.classList.contains('open')) {
+    closeLightbox();
+  }
 });
 
 /* ── 마우스 휠 ── */
@@ -308,21 +338,21 @@ if (lbOverlay) {
   }, { passive: false });
 }
 
-/* ── 터치 스와이프: 위아래로 이미지 전환 ── */
-let touchStartY = 0;
+/* ── 터치 스와이프: 좌우로 이미지 전환 ── */
+let touchStartX = 0;
 if (lbOverlay) {
   lbOverlay.addEventListener('touchstart', e => {
-    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
   }, { passive: true });
 
   lbOverlay.addEventListener('touchend', e => {
     if (!lbOverlay.classList.contains('open')) return;
 
-    const diff = touchStartY - e.changedTouches[0].clientY;
-    if (Math.abs(diff) < 40) return; // 40px 미만은 무시
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) < 40) return; // 40px 미만 무시
 
-    const goNext = diff > 0 && currentImageIndex < validImgs.length - 1; // 위로 스와이프
-    const goPrev = diff < 0 && currentImageIndex > 0;                    // 아래로 스와이프
+    const goNext = diff > 0 && currentImageIndex < validImgs.length - 1; // 왼쪽으로 스와이프 → 다음
+    const goPrev = diff < 0 && currentImageIndex > 0;                    // 오른쪽으로 스와이프 → 이전
     if (!goNext && !goPrev) return;
 
     const imgEl = lbScroll.querySelector('.lb-img');
