@@ -25,7 +25,7 @@ const WORKS = [
     year: 2021,
     order: 0,
     thumb: "img/works/illust/0/0.webp",
-    images: ["img/works/illust/0/0.jpg"],
+    images: ["img/works/illust/0/0.webp"],
     description: "블렌더 3D",  description_en: "blender 3D",
   },
 
