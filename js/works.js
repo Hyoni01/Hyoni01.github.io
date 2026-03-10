@@ -241,7 +241,7 @@ const WORKS = [
     {
   id: "chara-006",
   category: "cha-personal",
-  title:"bee and puppy cat",
+  title:"비와 퍼피캣" , title_en:"bee and puppy cat",
   order: 0,
   year: 2021,
   thumb:"img/works/chara/6/6.png",
