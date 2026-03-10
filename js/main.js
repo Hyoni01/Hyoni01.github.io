@@ -308,6 +308,34 @@ if (lbOverlay) {
   }, { passive: false });
 }
 
+/* ── 터치 스와이프: 위아래로 이미지 전환 ── */
+let touchStartY = 0;
+if (lbOverlay) {
+  lbOverlay.addEventListener('touchstart', e => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  lbOverlay.addEventListener('touchend', e => {
+    if (!lbOverlay.classList.contains('open')) return;
+
+    const diff = touchStartY - e.changedTouches[0].clientY;
+    if (Math.abs(diff) < 40) return; // 40px 미만은 무시
+
+    const goNext = diff > 0 && currentImageIndex < validImgs.length - 1; // 위로 스와이프
+    const goPrev = diff < 0 && currentImageIndex > 0;                    // 아래로 스와이프
+    if (!goNext && !goPrev) return;
+
+    const imgEl = lbScroll.querySelector('.lb-img');
+    if (imgEl) imgEl.classList.add('fade-out');
+
+    setTimeout(() => {
+      if (goNext) currentImageIndex++;
+      if (goPrev) currentImageIndex--;
+      renderImage();
+    }, 120);
+  }, { passive: true });
+}
+
 /* ── nav 드롭다운 + nav-btn active 표시 ── */
 const currentPath = location.pathname.split('/').pop() || 'index.html';
 const currentCat  = urlParams.get('cat');
