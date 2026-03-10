@@ -230,6 +230,19 @@ function renderImage() {
     return;
   }
 
+  // 점 인디케이터 업데이트
+const dotsEl = document.getElementById('lb-dots');
+if (dotsEl) {
+  if (validImgs.length > 1) {
+    dotsEl.innerHTML = validImgs.map((_, i) =>
+      `<div class="lb-dot ${i === currentImageIndex ? 'active' : ''}"></div>`
+    ).join('');
+    dotsEl.style.display = 'flex';
+  } else {
+    dotsEl.style.display = 'none';
+  }
+}
+
   const src = validImgs[currentImageIndex] || '';
   lbScroll.innerHTML = src
     ? `<div class="lb-img"><img src="${src}" alt="${title}" loading="eager"></div>`

@@ -639,3 +639,22 @@ footer a:hover { color: var(--accent); }
   border-color: var(--accent);
   color: var(--accent);
 }
+
+/*일러스트 여러 장일때 인디케이터*/
+
+.lb-dots {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0;
+}
+
+.lb-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transition: background .2s;
+}
+.lb-dot.active { background: #fff; }
