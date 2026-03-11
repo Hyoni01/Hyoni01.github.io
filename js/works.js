@@ -148,6 +148,17 @@ const WORKS = [
     description: "캐릭터+배경 커미션",  description_en: "character+background commission",
   },
 
+ {
+    id: "commi-002",
+    category: "commission",
+    title: "커미션_260311",   title_en: "Commission_260311",
+    year: 2026,
+    order: 12,
+    thumb: "img/works/illust/12/12.webp",
+    images: ["img/works/illust/12/12.webp", ],
+    description: "캐릭터+배경 커미션",  description_en: "character+background commission",
+  },
+
   /* ── 2D · 애니메이션 ── */
   {
     id: "anim-001",
