@@ -209,6 +209,30 @@ nav {
 .sub-btn:hover  { border-color: var(--accent); color: var(--accent); }
 .sub-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
 
+
+/* TAG NAV */
+#tag-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0 clamp(1.2rem, 3vw, 2.4rem) 0.75rem;
+}
+.tag-btn {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: .04em;
+  padding: .28em .85em;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--ink-soft);
+  transition: all .18s;
+}
+.tag-btn:hover  { border-color: var(--accent); color: var(--accent); }
+.tag-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+
+
+
 /* =====================================================
    WORK GRID
    ===================================================== */
@@ -436,6 +460,35 @@ nav {
 .lb-nav-btn:disabled { opacity: 0.15; cursor: default; }
 
 .lb-counter { display: none; }
+
+/* 라이트박스 태그 영역 — flex로 카테고리·연도 + 태그칩 나란히 */
+.lb-tag {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: .2rem;
+}
+
+.lb-tag-btn {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: .04em;
+  padding: .2em .7em;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.6);
+  background: none;
+  cursor: pointer;
+  transition: border-color .18s, color .18s;
+}
+.lb-tag-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+
+
 /* =====================================================
    ABOUT PAGE
    ===================================================== */

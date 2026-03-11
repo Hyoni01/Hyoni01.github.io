@@ -8,7 +8,11 @@
  *    게임    > "game"
  *    캐릭터 > "character"
  *    order가 높을수록 최신
- *  이미지 경로:
+ *    
+ *  태그 (선택):
+ *    tags: ["fanart"]   ← 태그 필터에 표시됨
+ *  
+ * 이미지 경로:
  *    thumb:  "img/works/engname/thumb.jpg"
  *    video: "youtube:dQw4w9WgXcQ" // youtube.com/watch?v=dQw4w9WgXcQ <<이거 
  *    images: ["img/works/engname/01.jpg", ...]
@@ -134,6 +138,18 @@ const WORKS = [
     images: ["img/works/illust/10/10.webp", ],
     description: "맛있겠다, 정말 고마워!",  description_en: "This looks delicious, thank you so much!",
   },
+
+ {
+    id: "illu-013",
+    category: "personal",
+    title: "마녀의 외출",   title_en: "The Witch's Outing",
+    year: 2026,
+    order: 13,
+    thumb: "img/works/illust/13/13.webp",
+    images: ["img/works/illust/13/13.webp", ],
+    description: "저 작은 빗자루를 타고 어딜 가는걸까",  description_en: "Where could she be going on that little broomstick?",
+  },
+
   /* ── 일러스트 · 상업작 ── */
 
   /* ── 일러스트 · 커미션 ── */
@@ -255,6 +271,7 @@ const WORKS = [
   title:"비와 퍼피캣" , title_en:"bee and puppy cat",
   order: 0,
   year: 2021,
+  tags:["fanart"],
   thumb:"img/works/chara/6/6.webp",
   images:["img/works/chara/6/6.webp"],
   description:"", description_en:"",

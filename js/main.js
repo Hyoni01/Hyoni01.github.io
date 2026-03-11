@@ -20,6 +20,7 @@ const CAT_LABEL = {
     'cha-commission': '캐릭터 커미션',
     'cha-personal':   '캐릭터 개인작',
     'cha-commercial': '캐릭터 상업작',
+    sketchbook: '낙서장',
     noImage: '이미지 준비 중',
   },
   en: {
@@ -30,9 +31,20 @@ const CAT_LABEL = {
     'cha-commission': 'Cha Commission',
     'cha-personal':   'Cha Personal',
     'cha-commercial': 'Cha Commercial',
+    sketchbook: 'Sketchbook',
     noImage: 'Coming soon',
+    
   },
 };
+
+const TAG_LABEL = {
+  kr: { fanart: '팬아트' },
+  en: { fanart: 'Fanart'  },
+};
+
+function tagLabel(tag) {
+  return TAG_LABEL[LANG][tag] || tag;
+}
 
 function catLabel(cat) { return CAT_LABEL[LANG][cat] || cat; }
 
@@ -41,6 +53,8 @@ function isIllu(cat) { return ILLU_CATS.includes(cat); }
 
 let currentList  = [];
 let currentIndex = 0;
+let currentTag = null;
+let pageCats   = [];
 
 /* =====================================================
    GRID RENDERER
@@ -99,18 +113,19 @@ function buildCardHTML(work) {
     </div>`;
 }
 
-function renderGrid(target, cats) {
+function renderGrid(target, cats,tag) {
   const grid = document.querySelector(target);
   if (!grid) return;
 
-  currentList = WORKS
-    .filter(w => cats.includes(w.category))
-    .sort((a, b) => {
-      if (b.year !== a.year) return b.year - a.year;
-      const orderA = a.order ?? 0;
-      const orderB = b.order ?? 0;
-      return orderB - orderA;
-    });
+  pageCats= cats;
+
+  currentList = (tag
+  ? WORKS.filter(w => w.id && cats.includes(w.category) && (w.tags || []).includes(tag))
+  : WORKS.filter(w => w.id && cats.includes(w.category))
+  ).sort((a, b) => {
+    if (b.year !== a.year) return b.year - a.year;
+    return (b.order ?? 0) - (a.order ?? 0);
+  });
 
   if (currentList.length === 0) {
     grid.innerHTML = `<p class="empty-msg">${LANG === 'en' ? 'No works yet' : '아직 작업이 없어요'}</p>`;
@@ -145,6 +160,8 @@ function initCatFilter(allCats) {
       const cat  = btn.dataset.cat;
       const cats = cat === 'all' ? allCats : [cat];
       renderGrid('#work-grid', cats);
+      currentTag = null;
+      document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
 
       document.querySelectorAll('.nav-dropdown a').forEach(a => {
         const url      = new URL(a.href, location.href);
@@ -206,7 +223,35 @@ function renderImage() {
   const work  = currentList[currentIndex];
   const title = LANG === 'en' ? work.title_en : work.title;
 
-  lbTagEl.textContent = catLabel(work.category) + ' · ' + work.year;
+  // 변경
+  const tagChips = (work.tags || []).map(t => {
+  const label = tagLabel(t);
+    return `<button class="lb-tag-btn" data-tag="${t}"># ${label}</button>`;
+  }).join('');
+
+  lbTagEl.innerHTML = `<span>${catLabel(work.category)} · ${work.year}</span>${tagChips}`;
+
+  // 태그 버튼 클릭 이벤트
+  lbTagEl.querySelectorAll('.lb-tag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag;
+
+      closeLightbox();
+      history.back();
+
+      // 현재 활성 서브카테고리 유지하면서 태그 필터 적용
+      const activeSub = document.querySelector('.sub-btn.active');
+      const cat  = activeSub?.dataset.cat || 'all';
+      const cats = cat === 'all' ? pageCats : [cat];
+
+      currentTag = tag;
+      document.querySelectorAll('.tag-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tag === tag);
+      });
+
+      renderGrid('#work-grid', cats, tag);
+    });
+  });
 
   if (work.video && currentImageIndex === 0 && validImgs.length === 0) {
     const isYoutube = work.video.startsWith('youtube:');
@@ -414,3 +459,38 @@ document.addEventListener('touchstart', e => {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('touch-open'));
   }
 }, { passive: true });
+
+function initTagNav() {
+  const tagSet = new Set();
+  WORKS.forEach(w => (w.tags || []).forEach(t => tagSet.add(t)));
+  if (tagSet.size === 0) return;
+
+  const tagNav = document.getElementById('tag-nav');
+  if (!tagNav) return;
+
+  tagNav.innerHTML = [...tagSet].map(t =>
+    `<button class="tag-btn" data-tag="${t}"># ${tagLabel(t)}</button>`
+  ).join('');
+
+  tagNav.querySelectorAll('.tag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag;
+      if (currentTag === tag) {
+        currentTag = null;
+        btn.classList.remove('active');
+        const activeSub = document.querySelector('.sub-btn.active');
+        const cat  = activeSub?.dataset.cat || 'all';
+        const cats = cat === 'all' ? pageCats : [cat];
+        renderGrid('#work-grid', cats, null);
+      } else {
+        currentTag = tag;
+        document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const activeSub = document.querySelector('.sub-btn.active');
+        const cat  = activeSub?.dataset.cat || 'all';
+        const cats = cat === 'all' ? pageCats : [cat];
+        renderGrid('#work-grid', cats, tag);
+      }
+    });
+  });
+}

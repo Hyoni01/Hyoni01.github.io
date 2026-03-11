@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hyoni — Character</title>
+  <title>Hyoni — 낙서장</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -28,9 +28,9 @@
         </div>
       </div>
       <div class="nav-item">
-        <a href="character.html" class="nav-btn" data-kr="캐릭터" data-en="character">character</a>
+        <a href="character.html" class="nav-btn" data-kr="캐릭터" data-en="Character">캐릭터</a>
         <div class="nav-dropdown">
-          <a href="character.html"                data-kr="전체"  data-en="All">전체</a>
+          <a href="character.html"                    data-kr="전체"  data-en="All">전체</a>
           <a href="character.html?cat=cha-commission" data-kr="커미션" data-en="Commission">커미션</a>
           <a href="character.html?cat=cha-personal"   data-kr="개인작" data-en="Personal">개인작</a>
           <a href="character.html?cat=cha-commercial" data-kr="상업작" data-en="Commercial">상업작</a>
@@ -47,9 +47,8 @@
       <div class="nav-item">
         <a href="game.html" class="nav-btn" data-kr="게임" data-en="Game">게임</a>
       </div>
-          <!-- 낙서장 -->
       <div class="nav-item">
-        <a href="doodles.html" class="nav-btn" data-kr="낙서장" data-en="Sketchbook">낙서장</a>
+        <a href="doodles.html" class="nav-btn active" data-kr="낙서장" data-en="Sketchbook">낙서장</a>
       </div>
       <div class="nav-item">
         <a href="about.html" class="nav-btn" data-kr="About" data-en="About">About</a>
@@ -62,14 +61,8 @@
   </nav>
 
   <div class="page-wrap">
-    <div class="sub-nav">
-      <button class="sub-btn active" data-cat="all"        data-kr="전체"  data-en="All">전체</button>
-      <button class="sub-btn"        data-cat="cha-commission" data-kr="커미션" data-en="Commission">커미션</button>
-      <button class="sub-btn"        data-cat="cha-personal"   data-kr="개인작" data-en="Personal">개인작</button>
-      <button class="sub-btn"        data-cat="cha-commercial" data-kr="상업작" data-en="Commercial">상업작</button>
-    </div>
     <div id="tag-nav"></div>  <!-- ← 추가 -->
-    <div class="grid-wrap">
+    <div class="grid-wrap" style="padding-top: 2rem;">
       <div class="work-grid" id="work-grid"></div>
     </div>
   </div>
@@ -81,12 +74,12 @@
     </div>
     <div class="lb-scroll" id="lb-scroll"></div>
     <div id="lb-img-count" style="
-    display:none;
-    text-align:center;
-    color:rgba(255,255,255,0.45);
-    font-family:var(--font-mono);
-    font-size:.7rem;
-    padding:.4rem 0;">
+      display:none;
+      text-align:center;
+      color:rgba(255,255,255,0.45);
+      font-family:var(--font-mono);
+      font-size:.7rem;
+      padding:.4rem 0;">
     </div>
     <div class="lb-desc" id="lb-desc"></div>
     <div class="lb-dots" id="lb-dots"></div>
@@ -106,17 +99,8 @@
   <script src="js/works.js"></script>
   <script src="js/main.js"></script>
   <script>
-    const PAGE_CATS = ['character', 'cha-commission', 'cha-personal', 'cha-commercial'];
-    const initCat   = urlParams.get('cat') || 'all';
-    const initCats  = initCat === 'all' ? PAGE_CATS : [initCat];
-
-    document.querySelectorAll('.sub-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.cat === initCat);
-    });
-
-    renderGrid('#work-grid', initCats);
-    initCatFilter(PAGE_CATS);
-    initTagNav(); // ← 추가
+    renderGrid('#work-grid', ['doodles']);
+    initTagNav();
   </script>
 </body>
 </html>

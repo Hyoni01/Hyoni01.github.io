@@ -48,6 +48,12 @@
       <div class="nav-item">
         <a href="game.html" class="nav-btn" data-kr="게임" data-en="Game">게임</a>
       </div>
+
+                <!-- 낙서장 -->
+      <div class="nav-item">
+        <a href="doodles.html" class="nav-btn" data-kr="낙서장" data-en="Sketchbook">낙서장</a>
+      </div>
+
       <div class="nav-item">
         <a href="about.html" class="nav-btn" data-kr="About" data-en="About">About</a>
       </div>
@@ -65,6 +71,7 @@
       <button class="sub-btn" data-cat="2d-animation" data-kr="2D"   data-en="2D">2D</button>
       <button class="sub-btn" data-cat="3d-animation" data-kr="3D"   data-en="3D">3D</button>
     </div>
+    <div id="tag-nav"></div>  <!-- ← 추가 -->
     <div class="grid-wrap">
       <div class="work-grid" id="work-grid"></div>
     </div>
@@ -112,6 +119,7 @@
 
     renderGrid('#work-grid', initCats);
     initCatFilter(PAGE_CATS);
+    initTagNav(); // ← 추가
   </script>
 </body>
 </html>
