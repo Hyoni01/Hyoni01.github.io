@@ -462,7 +462,9 @@ document.addEventListener('touchstart', e => {
 
 function initTagNav() {
   const tagSet = new Set();
-  WORKS.forEach(w => (w.tags || []).forEach(t => tagSet.add(t)));
+  WORKS
+  .filter(w => w.id && pageCats.includes(w.category))
+  .forEach(w => (w.tags || []).forEach(t => tagSet.add(t)));
   if (tagSet.size === 0) return;
 
   const tagNav = document.getElementById('tag-nav');
