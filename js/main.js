@@ -383,21 +383,68 @@ if (lbOverlay) {
   }, { passive: false });
 }
 
-/* ── 터치 스와이프: 좌우로 이미지 전환 ── */
+/* ── 터치 스와이프: 좌우 이미지 전환 + 아래로 드래그 시 라이트박스 닫기 ── */
 let touchStartX = 0;
+let touchStartY = 0;
+let isDraggingDown = false;
+
 if (lbOverlay) {
   lbOverlay.addEventListener('touchstart', e => {
     touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    isDraggingDown = false;
+  }, { passive: true });
+
+  lbOverlay.addEventListener('touchmove', e => {
+    const diffY = e.touches[0].clientY - touchStartY;
+    const diffX = Math.abs(e.touches[0].clientX - touchStartX);
+
+    // 세로 방향이 더 크면 아래로 드래그 판정
+    if (diffY > 0 && diffY > diffX) {
+      isDraggingDown = true;
+      const imgEl = lbScroll.querySelector('.lb-img');
+      if (imgEl) imgEl.style.transform = `translateY(${diffY * 0.4}px)`;
+    }
   }, { passive: true });
 
   lbOverlay.addEventListener('touchend', e => {
-    if (!lbOverlay.classList.contains('open')) return;
+    const diffX = touchStartX - e.changedTouches[0].clientX;
+    const diffY = e.changedTouches[0].clientY - touchStartY;
 
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) < 40) return; // 40px 미만 무시
+    // 아래로 80px 이상 드래그 → 라이트박스 닫기
+    if (isDraggingDown && diffY > 80) {
+      const imgEl = lbScroll.querySelector('.lb-img');
+      if (imgEl) {
+        imgEl.style.transition = 'transform .25s ease, opacity .25s ease';
+        imgEl.style.transform  = 'translateY(120px)';
+        imgEl.style.opacity    = '0';
+      }
+      setTimeout(() => {
+        closeLightbox();
+        history.back();
+        // 스타일 초기화
+        const imgEl2 = lbScroll.querySelector('.lb-img');
+        if (imgEl2) { imgEl2.style.transform = ''; imgEl2.style.opacity = ''; imgEl2.style.transition = ''; }
+      }, 220);
+      return;
+    }
 
-    const goNext = diff > 0 && currentImageIndex < validImgs.length - 1; // 왼쪽으로 스와이프 → 다음
-    const goPrev = diff < 0 && currentImageIndex > 0;                    // 오른쪽으로 스와이프 → 이전
+    // 드래그 취소 → 원위치
+    if (isDraggingDown) {
+      const imgEl = lbScroll.querySelector('.lb-img');
+      if (imgEl) {
+        imgEl.style.transition = 'transform .2s ease';
+        imgEl.style.transform  = '';
+        setTimeout(() => { imgEl.style.transition = ''; }, 200);
+      }
+      isDraggingDown = false;
+      return;
+    }
+
+    // 좌우 스와이프 → 이미지 전환
+    if (Math.abs(diffX) < 40) return;
+    const goNext = diffX > 0 && currentImageIndex < validImgs.length - 1;
+    const goPrev = diffX < 0 && currentImageIndex > 0;
     if (!goNext && !goPrev) return;
 
     const imgEl = lbScroll.querySelector('.lb-img');
