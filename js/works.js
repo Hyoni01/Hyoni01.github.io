@@ -5,6 +5,7 @@
  *  category 값:
  *    일러스트 > "commission" | "personal" | "commercial"
  *    애니메이션       → "2d-animation" | "3d-animation"
+ *    낙서장   → "doodles"
  *    게임    > "game"
  *    캐릭터 > "character"
  *    order가 높을수록 최신
@@ -288,5 +289,18 @@ const WORKS = [
   description:"", description_en:"",
   },
 
+
+// doodles
+
+  {
+  id: "doodle-001",
+  category: "sketchbook",
+  title:"애니메이션 습작", title_en:"Animation Practice",
+  order: 0,
+  year: 2026,
+  thumb:"img/works/doodles/1/1.webp",
+  images:["img/works/doodles/1/1-1.webp",],
+  description:"", description_en:"",
+  },
   
 ];
