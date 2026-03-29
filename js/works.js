@@ -151,6 +151,17 @@ const WORKS = [
     description: "저 작은 빗자루를 타고 어딜 가는걸까",  description_en: "Where could she be going on that little broomstick?",
   },
 
+  {
+    id: "illu-014",
+    category: "personal",
+    title: "에일리언 미쿠",   title_en: "alien miku",
+    year: 2026,
+    tags:["fanart"],
+    order: 14,
+    thumb: "img/works/illust/14/14.webp",
+    images: ["img/works/illust/14/14.webp", ],
+    description: "에일리언 미쿠 팬아트!",  description_en: "alien miku fanart!",
+  },
   /* ── 일러스트 · 상업작 ── */
 
   /* ── 일러스트 · 커미션 ── */
