@@ -146,6 +146,28 @@
     <p id="form-status"></p>
   </form>
 </div>
+<script src="js/main.js"></script>
+<script>
+  /* bio 줄바꿈 처리 */
+  const bioEl = document.querySelector('.about-bio');
+  if (bioEl) {
+    const text = LANG === 'en' ? bioEl.dataset.en : bioEl.dataset.kr;
+    bioEl.innerHTML = text.replace(/\n/g, '<br>');
+  }
+
+  /* 폼 placeholder 언어 적용 */
+  document.querySelectorAll('[data-kr-placeholder]').forEach(el => {
+    el.placeholder = LANG === 'en'
+      ? el.dataset.enPlaceholder
+      : el.dataset.krPlaceholder;
+  });
+
+  /* 보내기 버튼 */
+  const submitBtn = document.getElementById('submit-btn');
+  if (submitBtn) {
+    submitBtn.textContent = LANG === 'en' ? 'Send' : '보내기';
+  }
+</script>
 
 <script>
 document.getElementById('contact-form').addEventListener('submit', async function(e) {
@@ -154,7 +176,7 @@ document.getElementById('contact-form').addEventListener('submit', async functio
   const status = document.getElementById('form-status');
 
   btn.disabled = true;
-  btn.textContent = '전송 중...';
+  btn.textContent = LANG === 'en' ? 'Sending...' : '전송 중...';
 
   const res = await fetch('/api/contact', {
     method: 'POST',
@@ -170,16 +192,18 @@ document.getElementById('contact-form').addEventListener('submit', async functio
   const data = await res.json();
 
   if (res.ok) {
-    status.textContent = '✓ 메시지가 전송됐어요!';
+    status.textContent = LANG === 'en' ? '✓ Message sent!' : '✓ 메시지가 전송됐어요!';
     status.style.color = 'var(--accent)';
     this.reset();
   } else {
-    status.textContent = '✗ ' + (data.error || '전송 실패');
+    status.textContent = LANG === 'en'
+      ? '✗ ' + (data.error || 'Failed to send.')
+      : '✗ ' + (data.error || '전송 실패');
     status.style.color = '#e55';
   }
 
   btn.disabled = false;
-  btn.textContent = '보내기';
+  btn.textContent = LANG === 'en' ? 'Send' : '보내기';
 });
 </script>
 
@@ -195,15 +219,6 @@ document.getElementById('contact-form').addEventListener('submit', async functio
     <a></a>
   </footer>
 
-  <script src="js/main.js"></script>
-  <script>
-    /* about 페이지 전용: bio는 줄바꿈 처리 */
-    const bioEl = document.querySelector('.about-bio');
-    if (bioEl) {
-      const text = LANG === 'en' ? bioEl.dataset.en : bioEl.dataset.kr;
-      bioEl.innerHTML = text.replace(/\n/g, '<br>');
-    }
-  </script>
 
 </body>
 </html>
