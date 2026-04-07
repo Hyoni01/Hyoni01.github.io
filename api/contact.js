@@ -5,6 +5,20 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  console.log('USER:', process.env.GMAIL_USER);
+  console.log('PASS length:', process.env.GMAIL_PASS?.length);
+
+  return res.status(200).json({
+    user: process.env.GMAIL_USER,
+    passLength: process.env.GMAIL_PASS?.length
+  });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   const { name, email, subject, message } = req.body;
 
   if (!name || !email || !subject || !message) {
