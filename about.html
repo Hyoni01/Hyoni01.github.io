@@ -121,19 +121,22 @@
   <form id="contact-form">
     <div class="form-group">
       <input type="text"  id="name"
-             data-kr-placeholder="이름"    data-en-placeholder="Name"
-             placeholder="이름" required />
+            autocomplete="name"
+            data-kr-placeholder="이름"    data-en-placeholder="Name"
+            placeholder="이름" required />
+
       <input type="email" id="email"
-             data-kr-placeholder="이메일"  data-en-placeholder="Email"
-             placeholder="이메일" required />
-    </div>
-    <div class="form-group">
+            autocomplete="email"
+            data-kr-placeholder="이메일"  data-en-placeholder="Email"
+            placeholder="이메일" required />
+
       <input type="text"  id="subject"
-             data-kr-placeholder="제목"    data-en-placeholder="Subject"
-             placeholder="제목" required />
-    </div>
-    <div class="form-group">
+            autocomplete="off"
+            data-kr-placeholder="제목"    data-en-placeholder="Subject"
+            placeholder="제목" required />
+
       <textarea id="message"
+                autocomplete="off"
                 data-kr-placeholder="메시지" data-en-placeholder="Message"
                 placeholder="메시지" rows="5" required></textarea>
     </div>
