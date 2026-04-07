@@ -711,3 +711,54 @@ footer a:hover { color: var(--accent); }
   transition: background .2s;
 }
 .lb-dot.active { background: #fff; }
+
+.contact-form-wrap {
+  margin-top: 2rem;
+}
+.contact-form-wrap form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.form-group {
+  display: flex;
+  gap: 0.7rem;
+}
+.contact-form-wrap input,
+.contact-form-wrap textarea {
+  width: 100%;
+  padding: 0.65em 0.9em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  transition: border-color .18s;
+}
+.contact-form-wrap input:focus,
+.contact-form-wrap textarea:focus {
+  border-color: var(--accent);
+}
+.contact-form-wrap textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+#submit-btn {
+  align-self: flex-start;
+  padding: 0.55em 1.6em;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background .18s;
+}
+#submit-btn:hover    { background: var(--accent); }
+#submit-btn:disabled { opacity: 0.5; cursor: default; }
+#form-status {
+  font-size: 0.82rem;
+  min-height: 1.2em;
+}
