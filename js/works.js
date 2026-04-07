@@ -162,6 +162,17 @@ const WORKS = [
     images: ["img/works/illust/14/14.webp", ],
     description: "에일리언 미쿠 팬아트!",  description_en: "alien miku fanart!",
   },
+    {
+    id: "illu-015",
+    category: "personal",
+    title: "어메이징 디지털 서커스 팬아트",   title_en: "The amazing digital circus fanart",
+    year: 2026,
+    tags:["fanart"],
+    order: 15,
+    thumb: "img/works/illust/15/15.webp",
+    images: ["img/works/illust/15/15.webp", ],
+    description: "어메이징 디지털 서커스 팬아트!",  description_en: "The amazing digital circus fanart!",
+  },
   /* ── 일러스트 · 상업작 ── */
 
   /* ── 일러스트 · 커미션 ── */
