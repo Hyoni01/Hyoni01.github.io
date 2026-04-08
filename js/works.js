@@ -312,7 +312,17 @@ const WORKS = [
   images:["img/works/chara/7/7.webp","img/works/chara/7/7-1.webp"],
   description:"", description_en:"",
   },
-
+  
+  {
+  id: "chara-008",
+  category: "cha-personal",
+  title:"효니", title_en:"hyoni",
+  order: 6,
+  year: 2026,
+  thumb:"img/works/chara/8/8.webp",
+  images:["img/works/chara/8/8.webp"],
+  description:"", description_en:"",
+  },
 
 // doodles
 
