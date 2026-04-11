@@ -324,6 +324,17 @@ const WORKS = [
   description:"", description_en:"",
   },
 
+  {
+  id: "chara-009",
+  category: "cha-personal",
+  title:"버디", title_en:"BUDDY",
+  order: 7,
+  year: 2026,
+  thumb:"img/works/chara/9/9.webp",
+  images:["img/works/chara/9/9.webp"],
+  description:"", description_en:"",
+  },
+
 // doodles
 
   {
