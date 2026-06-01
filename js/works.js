@@ -347,5 +347,82 @@ const WORKS = [
   images:["img/works/doodles/1/1-1.webp",],
   description:"", description_en:"",
   },
-  
+ 
+  {
+  id: "doodle-002",
+  category: "sketchbook",
+  title:"캐릭터낙서1", title_en:"charaDoodle",
+  order: 1,
+  year: 2026,
+  thumb:"img/works/doodles/2/2.webp",
+  images:["img/works/doodles/2/2.webp",],
+  description:"", description_en:"",
+  },
+
+  {
+  id: "doodle-003",
+  category: "sketchbook",
+  title:"캐릭터낙서2", title_en:"charaDoodle2",
+  order: 2,
+  year: 2026,
+  thumb:"img/works/doodles/3/3.webp",
+  images:["img/works/doodles/3/3.webp",],
+  description:"", description_en:"",
+  },
+
+  {
+  id: "doodle-004",
+  category: "sketchbook",
+  title:"캐릭터낙서3", title_en:"charaDoodle3",
+  order: 3,
+  year: 2026,
+  thumb:"img/works/doodles/4/4.webp",
+  images:["img/works/doodles/4/4.webp",],
+  description:"", description_en:"",
+  },
+
+  {
+  id: "doodle-005",
+  category: "sketchbook",
+  title:"캐릭터낙서4", title_en:"charaDoodle4",
+  order: 4,
+  year: 2026,
+  thumb:"img/works/doodles/5/5.webp",
+  images:["img/works/doodles/5/5.webp",],
+  description:"", description_en:"",
+  },
+
+  {
+  id: "doodle-006",
+  category: "sketchbook",
+  title:"캐릭터낙서5", title_en:"charaDoodle5",
+  order: 5,
+  year: 2026,
+  thumb:"img/works/doodles/6/6.webp",
+  images:["img/works/doodles/6/6.webp",],
+  description:"", description_en:"",
+  },
+
+  {
+  id: "doodle-007",
+  category: "sketchbook",
+  title:"캐릭터낙서6", title_en:"charaDoodle6",
+  order: 6,
+  year: 2026,
+  thumb:"img/works/doodles/7/7.webp",
+  images:["img/works/doodles/7/7.webp",],
+  description:"", description_en:"",
+  },
+
+  {
+  id: "doodle-008",
+  category: "sketchbook",
+  title:"캐릭터낙서7", title_en:"charaDoodle7",
+  order: 7,
+  year: 2026,
+  thumb:"img/works/doodles/8/8.webp",
+  images:["img/works/doodles/8/8.webp",],
+  description:"", description_en:"",
+  },
+
 ];
