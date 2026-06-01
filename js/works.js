@@ -226,13 +226,13 @@ const WORKS = [
 
   /* ── 게임 ── */
   {
-    // id: "game-001",
-    // category: "game",
-    // title: "게임 프로젝트 1",  title_en: "Game Project 1",
-    // year: 2025,
-    // thumb: "",
-    // images: [""],
-    // description: "작품 설명.",  description_en: "Description.",
+    id: "game-001",
+    category: "game",
+    title: "엘스웨어",  title_en: "ElseWhere",
+    year: 2026,
+    thumb: "img/works/game/1/1.webp",
+    images: ["img/works/game/1/1-2.webp"],
+    description: "작품 설명.",  description_en: "Description.",
   },
 
   /* -- 캐릭터 -- */
