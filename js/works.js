@@ -232,7 +232,7 @@ const WORKS = [
     year: 2026,
     thumb: "img/works/game/1/1.webp",
     images: ["img/works/game/1/1-2.webp"],
-    description: "작품 설명.",  description_en: "Description.",
+    description: "엘스웨어 프로토타입 개발",  description_en: "ElseWhere prototype dev",
   },
 
   /* -- 캐릭터 -- */
