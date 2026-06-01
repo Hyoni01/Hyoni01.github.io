@@ -204,7 +204,13 @@ function openLightbox(id) {
 function renderLightbox() {
   const work = currentList[currentIndex];
   if (!work) return;
-
+// 기존 src를 비웠다가 다시 넣어서 gif 리셋
+  const imgEl = lbScroll.querySelector('img');
+  if (imgEl) {
+    const src = imgEl.src;
+    imgEl.src = '';
+    imgEl.src = src;
+  }
   const title = LANG === 'en' ? work.title_en : work.title;
   const desc  = LANG === 'en' ? work.description_en : work.description;
 
