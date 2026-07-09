@@ -173,6 +173,17 @@ const WORKS = [
     images: ["img/works/illust/15/15.webp", ],
     description: "어메이징 디지털 서커스 팬아트!",  description_en: "The amazing digital circus fanart!",
   },
+
+      {
+    id: "illu-016",
+    category: "personal",
+    title: "호수 안에",   title_en: "In the lake",
+    year: 2026,
+    order: 16,
+    thumb: "img/works/illust/16/16.webp",
+    images: ["img/works/illust/16/16.webp", ],
+    description: "",  description_en: "",
+  },
   /* ── 일러스트 · 상업작 ── */
 
   /* ── 일러스트 · 커미션 ── */
