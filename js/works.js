@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783868353349",
+    category: "cha-personal",
+    title: "드리머의 드림랜드",
+    title_en: "dreamer's dreamland",
+    year: 2026,
+    order: 1783868355749,     
+    thumb: "img/works/work-1783868353349/01.webp",
+    images: ["img/works/work-1783868353349/01.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783868327961",
     category: "cha-personal",
     title: "효니",
