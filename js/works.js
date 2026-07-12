@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783868404039",
+    category: "cha-personal",
+    title: "제키",
+    title_en: "jacky",
+    year: 2026,
+    order: 1783868406428,     
+    thumb: "img/works/work-1783868404039/01.webp",
+    images: ["img/works/work-1783868404039/01.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783868353349",
     category: "cha-personal",
     title: "드리머의 드림랜드",
