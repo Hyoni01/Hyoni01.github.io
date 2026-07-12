@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783868232898",
+    category: "cha-personal",
+    title: "시계",
+    title_en: "clock",
+    year: 2026,
+    order: 1783868235379,     
+    thumb: "img/works/work-1783868232898/01.webp",
+    images: ["img/works/work-1783868232898/01.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783868188251",
     category: "cha-personal",
     title: "광대",
