@@ -41,6 +41,7 @@ export default async function handler(req, res) {
     title: "${work.title}",
     title_en: "${work.title_en}",
     year: ${new Date().getFullYear()},
+    order: ${work.order},     
     thumb: "${imagePaths[0] || ''}",
     images: ${JSON.stringify(imagePaths)},
     tags: ${JSON.stringify(work.tags)},

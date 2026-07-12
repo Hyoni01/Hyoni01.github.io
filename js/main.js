@@ -114,6 +114,7 @@ function buildCardHTML(work) {
 }
 
 function renderGrid(target, cats,tag) {
+  
   const grid = document.querySelector(target);
   if (!grid) return;
 
