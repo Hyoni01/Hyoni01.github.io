@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783867355748",
+    category: "cha-personal",
+    title: "옥타비오",
+    title_en: "octavio",
+    year: 2026,
+    order: 1783867359283,     
+    thumb: "img/works/work-1783867355748/01.webp",
+    images: ["img/works/work-1783867355748/01.webp","img/works/work-1783867355748/02.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783867326346",
     category: "cha-personal",
     title: "사과",
