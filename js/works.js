@@ -27,6 +27,7 @@ const WORKS = [
     title: "낙서",
     title_en: "doodle",
     year: 2026,
+    order:8,
     thumb: "img/works/work-1783865706998/01.webp",
     images: ["img/works/work-1783865706998/01.webp"],
     tags: [],
