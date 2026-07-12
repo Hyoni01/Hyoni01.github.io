@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783868327961",
+    category: "cha-personal",
+    title: "효니",
+    title_en: "hyoni",
+    year: 2026,
+    order: 1783868329664,     
+    thumb: "img/works/work-1783868327961/01.webp",
+    images: ["img/works/work-1783868327961/01.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783868298407",
     category: "cha-personal",
     title: "선생님들",
