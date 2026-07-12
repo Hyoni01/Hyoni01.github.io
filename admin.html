@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyoni Admin</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background: #f5f5f5; padding: 2rem; color: #222; }
+    h1 { font-size: 1.4rem; margin-bottom: 2rem; }
+    .card { background: #fff; border-radius: 12px; padding: 1.5rem; max-width: 680px; margin: 0 auto; }
+    .field { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.8rem; color: #666; margin-bottom: 0.3rem; }
+    input, select, textarea {
+      width: 100%; padding: 0.6rem 0.8rem;
+      border: 1px solid #ddd; border-radius: 8px;
+      font-size: 0.9rem; font-family: inherit;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .drop-zone {
+      border: 2px dashed #ccc; border-radius: 12px;
+      padding: 2rem; text-align: center;
+      cursor: pointer; color: #999; font-size: 0.9rem;
+      transition: border-color .2s;
+    }
+    .drop-zone.drag-over { border-color: #358C9A; color: #358C9A; }
+    .preview-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.5rem; margin-top: 1rem;
+    }
+    .preview-item { position: relative; }
+    .preview-item img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; }
+    .preview-item button {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(0,0,0,0.5); color: #fff;
+      border: none; border-radius: 50%;
+      width: 22px; height: 22px; cursor: pointer; font-size: 0.75rem;
+    }
+    .tags-input { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+    .tag {
+      background: #e8f4f6; color: #358C9A;
+      padding: 0.2em 0.7em; border-radius: 999px;
+      font-size: 0.78rem; display: flex; align-items: center; gap: 0.3rem;
+    }
+    .tag button { background: none; border: none; cursor: pointer; color: #358C9A; font-size: 0.8rem; }
+    .submit-btn {
+      width: 100%; padding: 0.75rem;
+      background: #1A1807; color: #fff;
+      border: none; border-radius: 999px;
+      font-size: 0.9rem; cursor: pointer; margin-top: 1.5rem;
+      transition: background .2s;
+    }
+    .submit-btn:hover { background: #358C9A; }
+    .submit-btn:disabled { opacity: 0.5; cursor: default; }
+    #status { margin-top: 1rem; font-size: 0.85rem; text-align: center; }
+    .login-wrap { max-width: 360px; margin: 4rem auto; }
+  </style>
+</head>
+<body>
+
+<div id="login-screen" class="card login-wrap">
+  <h1>🔒 Admin</h1>
+  <div class="field" style="margin-top:1.5rem;">
+    <label>비밀번호</label>
+    <input type="password" id="pw-input" placeholder="비밀번호 입력" />
+  </div>
+  <button class="submit-btn" onclick="login()">로그인</button>
+  <p id="login-error" style="color:#e55;font-size:0.82rem;margin-top:0.5rem;text-align:center;"></p>
+</div>
+
+<div id="admin-screen" style="display:none; max-width:680px; margin:0 auto;">
+  <h1 style="margin-bottom:1.5rem;">작품 업로드</h1>
+
+  <div class="card">
+    <!-- 이미지 업로드 -->
+    <div class="field">
+      <label>이미지 (드래그 앤 드롭 또는 클릭)</label>
+      <div class="drop-zone" id="drop-zone">
+        이미지를 여기에 드래그하거나 클릭해서 선택
+        <input type="file" id="file-input" multiple accept="image/*" style="display:none" />
+      </div>
+      <div class="preview-grid" id="preview-grid"></div>
+    </div>
+
+    <!-- 제목 -->
+    <div class="row">
+      <div class="field">
+        <label>제목 (한국어)</label>
+        <input type="text" id="title-kr" placeholder="작품 제목" />
+      </div>
+      <div class="field">
+        <label>제목 (영어)</label>
+        <input type="text" id="title-en" placeholder="Work title" />
+      </div>
+    </div>
+
+    <!-- 카테고리 -->
+    <div class="field">
+      <label>카테고리</label>
+      <select id="category">
+        <option value="commission">커미션</option>
+        <option value="personal">개인작</option>
+        <option value="commercial">상업작</option>
+        <option value="cha-commission">캐릭터 커미션</option>
+        <option value="cha-personal">캐릭터 개인작</option>
+        <option value="cha-commercial">캐릭터 상업작</option>
+        <option value="2d-animation">2D 애니메이션</option>
+        <option value="3d-animation">3D 애니메이션</option>
+        <option value="game">게임</option>
+        <option value="doodle">낙서장</option>
+      </select>
+    </div>
+
+    <!-- 태그 -->
+    <div class="field">
+      <label>태그 (입력 후 Enter)</label>
+      <input type="text" id="tag-input" placeholder="태그 입력 후 Enter" />
+      <div class="tags-input" id="tags-container"></div>
+    </div>
+
+    <!-- 설명 -->
+    <div class="row">
+      <div class="field">
+        <label>설명 (한국어)</label>
+        <textarea id="desc-kr" placeholder="작품 설명"></textarea>
+      </div>
+      <div class="field">
+        <label>설명 (영어)</label>
+        <textarea id="desc-en" placeholder="Work description"></textarea>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitWork()">업로드</button>
+    <p id="status"></p>
+  </div>
+</div>
+
+<script>
+let password = '';
+let images = [];
+let tags = [];
+
+// 로그인
+function login() {
+  password = document.getElementById('pw-input').value;
+  if (!password) return;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-screen').style.display = 'block';
+}
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
+});
+
+// 드래그 앤 드롭
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+// 이미지 → WebP 변환
+function handleFiles(files) {
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+        const webpDataUrl = canvas.toDataURL('image/webp', 0.88);
+        const base64 = webpDataUrl.split(',')[1];
+        const id = Date.now() + Math.random();
+        images.push({ base64, ext: 'webp', id, preview: webpDataUrl });
+        renderPreviews();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderPreviews() {
+  const grid = document.getElementById('preview-grid');
+  grid.innerHTML = images.map((img, i) => `
+    <div class="preview-item">
+      <img src="${img.preview}" />
+      <button onclick="removeImage(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeImage(i) {
+  images.splice(i, 1);
+  renderPreviews();
+}
+
+// 태그
+document.getElementById('tag-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const val = e.target.value.trim();
+    if (val && !tags.includes(val)) {
+      tags.push(val);
+      renderTags();
+    }
+    e.target.value = '';
+  }
+});
+
+function renderTags() {
+  document.getElementById('tags-container').innerHTML = tags.map((t, i) => `
+    <span class="tag">${t} <button onclick="removeTag(${i})">✕</button></span>
+  `).join('');
+}
+
+function removeTag(i) {
+  tags.splice(i, 1);
+  renderTags();
+}
+
+// 업로드
+async function submitWork() {
+  const titleKr = document.getElementById('title-kr').value.trim();
+  const titleEn = document.getElementById('title-en').value.trim();
+  const category = document.getElementById('category').value;
+  const descKr = document.getElementById('desc-kr').value.trim();
+  const descEn = document.getElementById('desc-en').value.trim();
+  const status = document.getElementById('status');
+  const btn = document.getElementById('submit-btn');
+
+  if (!titleKr || images.length === 0) {
+    status.textContent = '제목과 이미지는 필수예요.';
+    status.style.color = '#e55';
+    return;
+  }
+
+  const id = `work-${Date.now()}`;
+  btn.disabled = true;
+  btn.textContent = '업로드 중...';
+  status.textContent = '';
+
+  try {
+    const res = await fetch('/api/admin/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        password,
+        work: { id, title: titleKr, title_en: titleEn, category, tags, description: descKr, description_en: descEn, images }
+      })
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      status.textContent = '✓ 업로드 완료! Vercel이 자동 재배포돼요.';
+      status.style.color = '#358C9A';
+      images = []; tags = [];
+      document.getElementById('preview-grid').innerHTML = '';
+      document.getElementById('tags-container').innerHTML = '';
+      document.getElementById('title-kr').value = '';
+      document.getElementById('title-en').value = '';
+      document.getElementById('desc-kr').value = '';
+      document.getElementById('desc-en').value = '';
+    } else {
+      status.textContent = '✗ ' + data.error;
+      status.style.color = '#e55';
+    }
+  } catch (err) {
+    status.textContent = '✗ 네트워크 오류';
+    status.style.color = '#e55';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '업로드';
+}
+</script>
+</body>
+</html>

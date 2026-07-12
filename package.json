@@ -1,5 +1,9 @@
 {
   "name": "hyoni-portfolio",
   "version": "1.0.0",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "nodemailer": "^6.9.9",
+    "@octokit/rest": "^20.0.0"
+  }
 }
