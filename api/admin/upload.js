@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   try {
     // 1. 이미지 파일들 커밋
-    const imagePaths = work.imagePaths;
+    const imagePaths = work.imagePaths || work.images || [];
 
     // 2. works.js 읽기
     const { data: fileData } = await octokit.repos.getContent({
