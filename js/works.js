@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783866480307",
+    category: "cha-personal",
+    title: "집",
+    title_en: "house",
+    year: 2026,
+    order: 1783866480308,     
+    thumb: "img/works/work-1783866480307/01.webp",
+    images: ["img/works/work-1783866480307/01.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783865706998",
     category: "doodle",
     title: "낙서",
