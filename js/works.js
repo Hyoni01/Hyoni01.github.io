@@ -63,7 +63,7 @@ const WORKS = [
   {
     id: "work-1783868298407",
     order: 1783868300738,
-    category: "doodle",
+    category: "sketchbook",
     title: "선생님들",
     title_en: "teachers",
     year: 2026,
