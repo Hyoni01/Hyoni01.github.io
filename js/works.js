@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783867326346",
+    category: "cha-personal",
+    title: "사과",
+    title_en: "apple",
+    year: 2026,
+    order: 1783867328859,     
+    thumb: "img/works/work-1783867326346/01.webp",
+    images: ["img/works/work-1783867326346/01.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783866614764",
     category: "cha-personal",
     title: "귀여운 고양이",
