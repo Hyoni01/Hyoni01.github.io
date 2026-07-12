@@ -53,6 +53,14 @@
     }
     .submit-btn:hover { background: #358C9A; }
     .submit-btn:disabled { opacity: 0.5; cursor: default; }
+    .delete-btn {
+      width: 100%; padding: 0.75rem;
+      background: #fff; color: #e55;
+      border: 1px solid #e55; border-radius: 999px;
+      font-size: 0.9rem; cursor: pointer; margin-top: 0.5rem;
+      transition: all .2s;
+    }
+    .delete-btn:hover { background: #e55; color: #fff; }
     #status { margin-top: 1rem; font-size: 0.85rem; text-align: center; min-height: 1.5em; }
     .login-wrap { max-width: 360px; margin: 4rem auto; }
     .progress-bar {
@@ -62,6 +70,49 @@
     .progress-fill {
       height: 100%; background: #358C9A;
       border-radius: 2px; transition: width .3s;
+    }
+    .tab-btn {
+      padding: 0.45em 1.2em;
+      border: 1px solid #ddd; border-radius: 999px;
+      background: #fff; font-size: 0.85rem;
+      cursor: pointer; transition: all .18s;
+    }
+    .tab-btn.active { background: #1A1807; color: #fff; border-color: #1A1807; }
+    .work-row {
+      display: flex; align-items: center; gap: 0.8rem;
+      padding: 0.7rem 0.5rem;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer; transition: background .15s;
+      border-radius: 8px;
+    }
+    .work-row:hover { background: #f9f9f9; }
+    .work-row-thumb {
+      width: 52px; height: 52px;
+      border-radius: 6px; overflow: hidden; flex-shrink: 0; background: #eee;
+    }
+    .work-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .no-thumb { width: 100%; height: 100%; background: #e8e8e8; }
+    .work-row-info { flex: 1; }
+    .work-row-title { font-size: 0.9rem; font-weight: 500; }
+    .work-row-meta { font-size: 0.75rem; color: #999; margin-top: 0.2rem; }
+    .work-row-arrow { color: #ccc; font-size: 1.2rem; }
+    .back-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.85rem; color: #666; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.3rem; padding: 0;
+    }
+    .back-btn:hover { color: #222; }
+    .edit-img-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.5rem; margin-top: 0.5rem;
+    }
+    .edit-img-item { position: relative; }
+    .edit-img-item img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; }
+    .edit-img-item button {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(0,0,0,0.5); color: #fff;
+      border: none; border-radius: 50%;
+      width: 22px; height: 22px; cursor: pointer; font-size: 0.75rem;
     }
   </style>
 </head>
@@ -78,78 +129,156 @@
 </div>
 
 <div id="admin-screen" style="display:none; max-width:680px; margin:0 auto;">
-  <h1 style="margin-bottom:1.5rem;">작품 업로드</h1>
+  <h1 style="margin-bottom:1.5rem;">Hyoni Admin</h1>
 
-  <div class="card">
-    <!-- 이미지 업로드 -->
-    <div class="field">
-      <label>이미지 (드래그 앤 드롭 또는 클릭)</label>
-      <div class="drop-zone" id="drop-zone">
-        이미지를 여기에 드래그하거나 클릭해서 선택
-        <input type="file" id="file-input" multiple accept="image/*" style="display:none" />
-      </div>
-      <div class="preview-grid" id="preview-grid"></div>
-    </div>
+  <!-- 탭 -->
+  <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+    <button class="tab-btn active" onclick="switchTab('upload')">업로드</button>
+    <button class="tab-btn" onclick="switchTab('manage')">작품 관리</button>
+  </div>
 
-    <!-- 제목 -->
-    <div class="row">
+  <!-- 업로드 탭 -->
+  <div id="tab-upload">
+    <div class="card">
       <div class="field">
-        <label>제목 (한국어)</label>
-        <input type="text" id="title-kr" placeholder="작품 제목" />
+        <label>이미지 (드래그 앤 드롭 또는 클릭)</label>
+        <div class="drop-zone" id="drop-zone">
+          이미지를 여기에 드래그하거나 클릭해서 선택
+          <input type="file" id="file-input" multiple accept="image/*" style="display:none" />
+        </div>
+        <div class="preview-grid" id="preview-grid"></div>
       </div>
-      <div class="field">
-        <label>제목 (영어)</label>
-        <input type="text" id="title-en" placeholder="Work title" />
-      </div>
-    </div>
-
-    <!-- 카테고리 -->
-    <div class="field">
-      <label>카테고리</label>
-      <select id="category">
-        <option value="commission">커미션</option>
-        <option value="personal">개인작</option>
-        <option value="commercial">상업작</option>
-        <option value="cha-commission">캐릭터 커미션</option>
-        <option value="cha-personal">캐릭터 개인작</option>
-        <option value="cha-commercial">캐릭터 상업작</option>
-        <option value="2d-animation">2D 애니메이션</option>
-        <option value="3d-animation">3D 애니메이션</option>
-        <option value="game">게임</option>
-        <option value="doodle">낙서장</option>
-      </select>
-    </div>
-
-    <!-- 순서 -->
-    <div class="field">
-      <label>순서 (비워두면 자동)</label>
-      <input type="number" id="order" placeholder="비워두면 자동 (최신순)" min="1" />
-    </div>
-
-    <!-- 태그 -->
-    <div class="field">
-      <label>태그 (입력 후 Enter)</label>
-      <input type="text" id="tag-input" placeholder="태그 입력 후 Enter" />
-      <div class="tags-input" id="tags-container"></div>
-    </div>
-
-    <!-- 설명 -->
-    <div class="row">
-      <div class="field">
-        <label>설명 (한국어)</label>
-        <textarea id="desc-kr" placeholder="작품 설명"></textarea>
+      <div class="row">
+        <div class="field">
+          <label>제목 (한국어)</label>
+          <input type="text" id="title-kr" placeholder="작품 제목" />
+        </div>
+        <div class="field">
+          <label>제목 (영어)</label>
+          <input type="text" id="title-en" placeholder="Work title" />
+        </div>
       </div>
       <div class="field">
-        <label>설명 (영어)</label>
-        <textarea id="desc-en" placeholder="Work description"></textarea>
+        <label>카테고리</label>
+        <select id="category">
+          <option value="commission">커미션</option>
+          <option value="personal">개인작</option>
+          <option value="commercial">상업작</option>
+          <option value="3d-animation">3D 애니메이션</option>
+          <option value="3d-works">3D 작업물</option>
+          <option value="game">게임</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>순서 (비워두면 자동)</label>
+        <input type="number" id="order" placeholder="비워두면 자동 (최신순)" min="1" />
+      </div>
+      <div class="field">
+        <label>태그 (입력 후 Enter)</label>
+        <input type="text" id="tag-input" placeholder="태그 입력 후 Enter" />
+        <div class="tags-input" id="tags-container"></div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>설명 (한국어)</label>
+          <textarea id="desc-kr" placeholder="작품 설명"></textarea>
+        </div>
+        <div class="field">
+          <label>설명 (영어)</label>
+          <textarea id="desc-en" placeholder="Work description"></textarea>
+        </div>
+      </div>
+      <button class="submit-btn" id="submit-btn" onclick="submitWork()">업로드</button>
+      <div class="progress-bar" id="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+      <p id="status"></p>
+    </div>
+  </div>
+
+  <!-- 관리 탭 -->
+  <div id="tab-manage" style="display:none;">
+    <!-- 목록 화면 -->
+    <div id="manage-list">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+          <span style="font-size:0.85rem; color:#666;">작품을 클릭해서 편집해요</span>
+          <button onclick="loadWorks()" style="font-size:0.8rem; padding:0.3em 0.9em; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer;">새로고침</button>
+        </div>
+        <div id="works-list"></div>
       </div>
     </div>
 
-    <button class="submit-btn" id="submit-btn" onclick="submitWork()">업로드</button>
-    <div class="progress-bar" id="progress-bar">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    <!-- 편집 화면 -->
+    <div id="manage-edit" style="display:none;">
+      <div class="card">
+        <button class="back-btn" onclick="closeEdit()">← 목록으로</button>
+
+        <!-- 기존 이미지 -->
+        <div class="field">
+          <label>현재 이미지</label>
+          <div class="edit-img-grid" id="edit-img-grid"></div>
+        </div>
+
+        <!-- 새 이미지 추가 -->
+        <div class="field">
+          <label>이미지 추가</label>
+          <div class="drop-zone" id="edit-drop-zone">
+            추가할 이미지를 드래그하거나 클릭
+            <input type="file" id="edit-file-input" multiple accept="image/*" style="display:none" />
+          </div>
+          <div class="preview-grid" id="edit-preview-grid"></div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label>제목 (한국어)</label>
+            <input type="text" id="edit-title-kr" />
+          </div>
+          <div class="field">
+            <label>제목 (영어)</label>
+            <input type="text" id="edit-title-en" />
+          </div>
+        </div>
+        <div class="field">
+          <label>카테고리</label>
+          <select id="edit-category">
+            <option value="commission">커미션</option>
+            <option value="personal">개인작</option>
+            <option value="commercial">상업작</option>
+            <option value="3d-animation">3D 애니메이션</option>
+            <option value="3d-works">3D 작업물</option>
+            <option value="game">게임</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>순서</label>
+          <input type="number" id="edit-order" min="1" />
+        </div>
+        <div class="field">
+          <label>태그 (입력 후 Enter)</label>
+          <input type="text" id="edit-tag-input" placeholder="태그 입력 후 Enter" />
+          <div class="tags-input" id="edit-tags-container"></div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>설명 (한국어)</label>
+            <textarea id="edit-desc-kr"></textarea>
+          </div>
+          <div class="field">
+            <label>설명 (영어)</label>
+            <textarea id="edit-desc-en"></textarea>
+          </div>
+        </div>
+
+        <button class="submit-btn" id="edit-submit-btn" onclick="saveEdit()">저장</button>
+        <div class="progress-bar" id="edit-progress-bar">
+          <div class="progress-fill" id="edit-progress-fill" style="width:0%"></div>
+        </div>
+        <p id="edit-status"></p>
+        <button class="delete-btn" onclick="deleteWork()">작품 삭제</button>
+      </div>
     </div>
-    <p id="status"></p>
   </div>
 </div>
 
@@ -157,6 +286,10 @@
 let password = '';
 let images = [];
 let tags = [];
+let editImages = [];
+let editTags = [];
+let editWork = null;
+let editRemovedImages = [];
 
 function login() {
   password = document.getElementById('pw-input').value;
@@ -168,20 +301,34 @@ document.getElementById('pw-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') login();
 });
 
+/* ── 탭 전환 ── */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('tab-upload').style.display  = tab === 'upload' ? 'block' : 'none';
+  document.getElementById('tab-manage').style.display  = tab === 'manage' ? 'block' : 'none';
+  if (tab === 'manage') loadWorks();
+}
+
+/* ── 업로드 탭: 이미지 ── */
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
-
 dropZone.addEventListener('click', () => fileInput.click());
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  handleFiles(e.dataTransfer.files);
-});
-fileInput.addEventListener('change', e => handleFiles(e.target.files));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files, false); });
+fileInput.addEventListener('change', e => handleFiles(e.target.files, false));
 
-function handleFiles(files) {
+/* ── 편집 탭: 이미지 추가 ── */
+const editDropZone = document.getElementById('edit-drop-zone');
+const editFileInput = document.getElementById('edit-file-input');
+editDropZone.addEventListener('click', () => editFileInput.click());
+editDropZone.addEventListener('dragover', e => { e.preventDefault(); editDropZone.classList.add('drag-over'); });
+editDropZone.addEventListener('dragleave', () => editDropZone.classList.remove('drag-over'));
+editDropZone.addEventListener('drop', e => { e.preventDefault(); editDropZone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files, true); });
+editFileInput.addEventListener('change', e => handleFiles(e.target.files, true));
+
+function handleFiles(files, isEdit) {
   Array.from(files).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
@@ -189,20 +336,23 @@ function handleFiles(files) {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const MAX = 2000;
-        let w = img.width;
-        let h = img.height;
+        let w = img.width, h = img.height;
         if (w > MAX || h > MAX) {
           if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
           else       { w = Math.round(w * MAX / h); h = MAX; }
         }
-        canvas.width  = w;
-        canvas.height = h;
+        canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         const webpDataUrl = canvas.toDataURL('image/webp', 0.82);
         const base64 = webpDataUrl.split(',')[1];
         const id = Date.now() + Math.random();
-        images.push({ base64, ext: 'webp', id, preview: webpDataUrl });
-        renderPreviews();
+        if (isEdit) {
+          editImages.push({ base64, ext: 'webp', id, preview: webpDataUrl });
+          renderEditPreviews();
+        } else {
+          images.push({ base64, ext: 'webp', id, preview: webpDataUrl });
+          renderPreviews();
+        }
       };
       img.src = e.target.result;
     };
@@ -211,50 +361,61 @@ function handleFiles(files) {
 }
 
 function renderPreviews() {
-  const grid = document.getElementById('preview-grid');
-  grid.innerHTML = images.map((img, i) => `
+  document.getElementById('preview-grid').innerHTML = images.map((img, i) => `
     <div class="preview-item">
       <img src="${img.preview}" />
       <button onclick="removeImage(${i})">✕</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
+function removeImage(i) { images.splice(i, 1); renderPreviews(); }
 
-function removeImage(i) {
-  images.splice(i, 1);
-  renderPreviews();
+function renderEditPreviews() {
+  document.getElementById('edit-preview-grid').innerHTML = editImages.map((img, i) => `
+    <div class="preview-item">
+      <img src="${img.preview}" />
+      <button onclick="removeEditNewImage(${i})">✕</button>
+    </div>`).join('');
 }
+function removeEditNewImage(i) { editImages.splice(i, 1); renderEditPreviews(); }
 
+/* ── 태그 ── */
 document.getElementById('tag-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     e.preventDefault();
     const val = e.target.value.trim();
-    if (val && !tags.includes(val)) {
-      tags.push(val);
-      renderTags();
-    }
+    if (val && !tags.includes(val)) { tags.push(val); renderTags(); }
     e.target.value = '';
   }
 });
-
 function renderTags() {
   document.getElementById('tags-container').innerHTML = tags.map((t, i) => `
-    <span class="tag">${t} <button onclick="removeTag(${i})">✕</button></span>
-  `).join('');
+    <span class="tag">${t} <button onclick="removeTag(${i})">✕</button></span>`).join('');
 }
+function removeTag(i) { tags.splice(i, 1); renderTags(); }
 
-function removeTag(i) {
-  tags.splice(i, 1);
-  renderTags();
+document.getElementById('edit-tag-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const val = e.target.value.trim();
+    if (val && !editTags.includes(val)) { editTags.push(val); renderEditTags(); }
+    e.target.value = '';
+  }
+});
+function renderEditTags() {
+  document.getElementById('edit-tags-container').innerHTML = editTags.map((t, i) => `
+    <span class="tag">${t} <button onclick="removeEditTag(${i})">✕</button></span>`).join('');
 }
+function removeEditTag(i) { editTags.splice(i, 1); renderEditTags(); }
 
-function setProgress(current, total) {
-  const bar = document.getElementById('progress-bar');
-  const fill = document.getElementById('progress-fill');
+/* ── 진행률 ── */
+function setProgress(id, current, total) {
+  const bar = document.getElementById(id + '-bar');
+  const fill = document.getElementById(id + '-fill');
   bar.style.display = 'block';
   fill.style.width = `${Math.round((current / total) * 100)}%`;
 }
 
+/* ── 업로드 ── */
 async function submitWork() {
   const titleKr  = document.getElementById('title-kr').value.trim();
   const titleEn  = document.getElementById('title-en').value.trim();
@@ -266,85 +427,205 @@ async function submitWork() {
   const btn      = document.getElementById('submit-btn');
 
   if (!titleKr || images.length === 0) {
-    status.textContent = '제목과 이미지는 필수예요.';
-    status.style.color = '#e55';
-    return;
+    status.textContent = '제목과 이미지는 필수예요.'; status.style.color = '#e55'; return;
   }
 
   const id = `work-${Date.now()}`;
   btn.disabled = true;
   status.style.color = '#358C9A';
 
+  const imagePaths = [];
   try {
-    /* 1. 이미지 개별 업로드 */
-    const imagePaths = [];
     for (let i = 0; i < images.length; i++) {
       status.textContent = `이미지 업로드 중... (${i + 1} / ${images.length})`;
-      setProgress(i, images.length + 1);
-
+      setProgress('progress', i, images.length + 1);
       const imgRes = await fetch('/api/admin/upload-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          password,
-          workId: id,
-          index: i,
-          base64: images[i].base64,
-          ext: images[i].ext
-        })
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password, workId: id, index: i, base64: images[i].base64, ext: images[i].ext })
       });
-
       const imgData = await imgRes.json();
       if (!imgRes.ok) throw new Error(imgData.error);
       imagePaths.push(imgData.path);
     }
 
-    /* 2. 메타데이터 업로드 (works.js 업데이트) */
     status.textContent = 'works.js 업데이트 중...';
-    setProgress(images.length, images.length + 1);
+    setProgress('progress', images.length, images.length + 1);
 
     const res = await fetch('/api/admin/upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        password,
-        work: {
-          id,
-          order: orderVal ? parseInt(orderVal) : Date.now(),
-          title: titleKr,
-          title_en: titleEn,
-          category,
-          tags,
-          description: descKr,
-          description_en: descEn,
-          imagePaths
-        }
-      })
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, work: {
+        id, order: orderVal ? parseInt(orderVal) : Date.now(),
+        title: titleKr, title_en: titleEn, category, tags,
+        description: descKr, description_en: descEn, imagePaths
+      }})
     });
-
     const data = await res.json();
-    if (res.ok) {
-      setProgress(images.length + 1, images.length + 1);
-      status.textContent = '✓ 업로드 완료! Vercel이 자동 재배포돼요.';
-      images = []; tags = [];
-      document.getElementById('preview-grid').innerHTML = '';
-      document.getElementById('tags-container').innerHTML = '';
-      document.getElementById('order').value = '';
-      document.getElementById('title-kr').value = '';
-      document.getElementById('title-en').value = '';
-      document.getElementById('desc-kr').value = '';
-      document.getElementById('desc-en').value = '';
-    } else {
-      throw new Error(data.error);
-    }
+    if (!res.ok) throw new Error(data.error);
+
+    setProgress('progress', images.length + 1, images.length + 1);
+    status.textContent = '✓ 업로드 완료! Vercel이 자동 재배포돼요.';
+    images = []; tags = [];
+    ['preview-grid','tags-container'].forEach(id => document.getElementById(id).innerHTML = '');
+    ['title-kr','title-en','desc-kr','desc-en','order'].forEach(id => document.getElementById(id).value = '');
   } catch (err) {
-    status.textContent = '✗ ' + err.message;
-    status.style.color = '#e55';
+    status.textContent = '✗ ' + err.message; status.style.color = '#e55';
     document.getElementById('progress-bar').style.display = 'none';
   }
+  btn.disabled = false; btn.textContent = '업로드';
+}
 
-  btn.disabled = false;
-  btn.textContent = '업로드';
+/* ── 작품 목록 불러오기 ── */
+async function loadWorks() {
+  const list = document.getElementById('works-list');
+  list.innerHTML = '<p style="color:#999;font-size:0.85rem;">불러오는 중...</p>';
+  try {
+    const res = await fetch('/api/admin/works', { headers: { 'x-admin-password': password } });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    if (data.works.length === 0) {
+      list.innerHTML = '<p style="color:#999;font-size:0.85rem;">작품이 없어요.</p>'; return;
+    }
+    list.innerHTML = data.works.map(w => `
+      <div class="work-row" onclick="openEdit('${w.id}')">
+        <div class="work-row-thumb">
+          ${w.images?.[0] ? `<img src="/${w.images[0]}" />` : '<div class="no-thumb"></div>'}
+        </div>
+        <div class="work-row-info">
+          <div class="work-row-title">${w.title}</div>
+          <div class="work-row-meta">${w.category} · ${w.year}</div>
+        </div>
+        <div class="work-row-arrow">›</div>
+      </div>`).join('');
+    window._works = data.works;
+    window._worksSha = data.sha;
+  } catch (err) {
+    list.innerHTML = `<p style="color:#e55;font-size:0.85rem;">✗ ${err.message}</p>`;
+  }
+}
+
+/* ── 편집 폼 열기 ── */
+function openEdit(id) {
+  const work = window._works.find(w => w.id === id);
+  if (!work) return;
+  editWork = work;
+  editImages = [];
+  editTags = [...(work.tags || [])];
+  editRemovedImages = [];
+
+  document.getElementById('edit-title-kr').value  = work.title || '';
+  document.getElementById('edit-title-en').value  = work.title_en || '';
+  document.getElementById('edit-category').value  = work.category || 'personal';
+  document.getElementById('edit-order').value     = work.order || '';
+  document.getElementById('edit-desc-kr').value   = work.description || '';
+  document.getElementById('edit-desc-en').value   = work.description_en || '';
+  document.getElementById('edit-preview-grid').innerHTML = '';
+  document.getElementById('edit-status').textContent = '';
+  document.getElementById('edit-progress-bar').style.display = 'none';
+  renderEditTags();
+
+  // 기존 이미지
+  document.getElementById('edit-img-grid').innerHTML = (work.images || []).map((src, i) => `
+    <div class="edit-img-item">
+      <img src="/${src}" onerror="this.style.background='#eee'" />
+      <button onclick="removeExistingImage(${i})">✕</button>
+    </div>`).join('');
+
+  document.getElementById('manage-list').style.display = 'none';
+  document.getElementById('manage-edit').style.display = 'block';
+}
+
+function closeEdit() {
+  document.getElementById('manage-edit').style.display = 'none';
+  document.getElementById('manage-list').style.display = 'block';
+}
+
+function removeExistingImage(i) {
+  editRemovedImages.push(editWork.images[i]);
+  editWork.images.splice(i, 1);
+  // 화면 갱신
+  document.getElementById('edit-img-grid').innerHTML = (editWork.images || []).map((src, i) => `
+    <div class="edit-img-item">
+      <img src="/${src}" onerror="this.style.background='#eee'" />
+      <button onclick="removeExistingImage(${i})">✕</button>
+    </div>`).join('');
+}
+
+/* ── 편집 저장 ── */
+async function saveEdit() {
+  const status = document.getElementById('edit-status');
+  const btn    = document.getElementById('edit-submit-btn');
+  btn.disabled = true;
+  status.style.color = '#358C9A';
+
+  const imagePaths = [...(editWork.images || [])];
+
+  try {
+    // 새 이미지 업로드
+    const startIndex = imagePaths.length;
+    for (let i = 0; i < editImages.length; i++) {
+      status.textContent = `이미지 업로드 중... (${i + 1} / ${editImages.length})`;
+      setProgress('edit-progress', i, editImages.length + 1);
+      const imgRes = await fetch('/api/admin/upload-image', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password, workId: editWork.id, index: startIndex + i, base64: editImages[i].base64, ext: editImages[i].ext })
+      });
+      const imgData = await imgRes.json();
+      if (!imgRes.ok) throw new Error(imgData.error);
+      imagePaths.push(imgData.path);
+    }
+
+    status.textContent = 'works.js 업데이트 중...';
+    setProgress('edit-progress', editImages.length, editImages.length + 1);
+
+    const res = await fetch('/api/admin/update', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, work: {
+        id: editWork.id,
+        order: parseInt(document.getElementById('edit-order').value) || editWork.order,
+        title: document.getElementById('edit-title-kr').value.trim(),
+        title_en: document.getElementById('edit-title-en').value.trim(),
+        category: document.getElementById('edit-category').value,
+        tags: editTags,
+        description: document.getElementById('edit-desc-kr').value.trim(),
+        description_en: document.getElementById('edit-desc-en').value.trim(),
+        year: editWork.year,
+        images: imagePaths,
+        removedImages: editRemovedImages,
+      }})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    setProgress('edit-progress', editImages.length + 1, editImages.length + 1);
+    status.textContent = '✓ 저장 완료! Vercel이 자동 재배포돼요.';
+    editImages = []; editRemovedImages = [];
+    document.getElementById('edit-preview-grid').innerHTML = '';
+  } catch (err) {
+    status.textContent = '✗ ' + err.message; status.style.color = '#e55';
+    document.getElementById('edit-progress-bar').style.display = 'none';
+  }
+  btn.disabled = false; btn.textContent = '저장';
+}
+
+/* ── 작품 삭제 ── */
+async function deleteWork() {
+  if (!confirm(`"${editWork.title}" 을 삭제할까요? 이미지 파일도 함께 삭제돼요.`)) return;
+  const status = document.getElementById('edit-status');
+  status.style.color = '#e55';
+  status.textContent = '삭제 중...';
+
+  try {
+    const res = await fetch('/api/admin/delete', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, workId: editWork.id, images: editWork.images })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    closeEdit();
+    loadWorks();
+  } catch (err) {
+    status.textContent = '✗ ' + err.message;
+  }
 }
 </script>
 </body>
