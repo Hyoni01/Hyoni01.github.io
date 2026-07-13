@@ -30,7 +30,7 @@ const WORKS = [
     year: 2026,
     thumb: "img/works/work-1783933906715/01.webp",
     images: ["img/works/work-1783933906715/01.webp"],
-    tags: [],
+    tags: ["fanart"],
     description: "",
     description_en: "",
   },
