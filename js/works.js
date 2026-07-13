@@ -30,7 +30,7 @@ const WORKS = [
     order: 1783932576222,     
     thumb: "img/works/work-1783932572777/01.webp",
     images: ["img/works/work-1783932572777/01.webp"],
-    tags: ["팬아트"],
+    tags: ["fanart"],
     description: "",
     description_en: "",
   },
