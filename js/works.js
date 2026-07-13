@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783932572777",
+    category: "personal",
+    title: "아다치 레이",
+    title_en: "adachi rei",
+    year: 2026,
+    order: 1783932576222,     
+    thumb: "img/works/work-1783932572777/01.webp",
+    images: ["img/works/work-1783932572777/01.webp"],
+    tags: ["팬아트"],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783932524527",
     category: "cha-personal",
     title: "자캐",
