@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1783932524527",
+    category: "cha-personal",
+    title: "자캐",
+    title_en: "OC",
+    year: 2026,
+    order: 1783932526597,     
+    thumb: "img/works/work-1783932524527/01.webp",
+    images: ["img/works/work-1783932524527/01.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1783868404039",
     order: 1783868406428,
     category: "cha-personal",
