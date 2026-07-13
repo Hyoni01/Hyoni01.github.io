@@ -22,25 +22,12 @@
 
 const WORKS = [
   {
-    id: "work-1783932572777",
-    category: "personal",
-    title: "아다치 레이",
-    title_en: "adachi rei",
-    year: 2026,
-    order: 1783932576222,     
-    thumb: "img/works/work-1783932572777/01.webp",
-    images: ["img/works/work-1783932572777/01.webp"],
-    tags: ["fanart"],
-    description: "",
-    description_en: "",
-  },
-  {
     id: "work-1783932524527",
+    order: 1783932526597,
     category: "cha-personal",
     title: "자캐",
     title_en: "OC",
     year: 2026,
-    order: 1783932526597,     
     thumb: "img/works/work-1783932524527/01.webp",
     images: ["img/works/work-1783932524527/01.webp"],
     tags: [],
