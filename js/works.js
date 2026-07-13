@@ -23,11 +23,11 @@
 const WORKS = [
   {
     id: "work-1783933906715",
+    order: 1783933909288,
     category: "personal",
     title: "아다치 레이",
     title_en: "adachi rei",
     year: 2026,
-    order: 1783933909288,     
     thumb: "img/works/work-1783933906715/01.webp",
     images: ["img/works/work-1783933906715/01.webp"],
     tags: [],
