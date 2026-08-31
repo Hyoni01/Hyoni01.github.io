@@ -344,7 +344,9 @@ if (lbCloseEl) lbCloseEl.addEventListener('click', () => {
   history.back();
 });
 if (lbOverlay) lbOverlay.addEventListener('click', e => {
-  if (e.target === lbOverlay) {
+  // 이미지, 버튼, 태그, 설명 클릭이면 무시
+  const isInteractive = e.target.closest('img, video, iframe, button, .lb-tag-btn, .lb-desc, .lb-title, .lb-tag');
+  if (!isInteractive) {
     closeLightbox();
     history.back();
   }
