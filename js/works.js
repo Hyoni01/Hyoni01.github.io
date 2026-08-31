@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1788138846067",
+    category: "game",
+    title: "드리머의 드림랜드",
+    title_en: "Dreamer's DreamLand",
+    year: 2026,
+    order: 1788138860556,     
+    thumb: "img/works/work-1788138846067/01.webp",
+    images: ["img/works/work-1788138846067/01.webp","img/works/work-1788138846067/02.webp","img/works/work-1788138846067/03.webp","img/works/work-1788138846067/04.webp"],
+    tags: [],
+    description: "프로토타입",
+    description_en: "prototype",
+  },
+  {
     id: "work-1783933906715",
     order: 1783933909288,
     category: "personal",
