@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1788138989899",
+    category: "cha-personal",
+    title: "허수아비",
+    title_en: "scarecrow",
+    year: 2026,
+    order: 1788138992069,     
+    thumb: "img/works/work-1788138989899/01.webp",
+    images: ["img/works/work-1788138989899/01.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1788138919959",
     category: "cha-personal",
     title: "무지개",
