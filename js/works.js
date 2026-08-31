@@ -22,6 +22,19 @@
 
 const WORKS = [
   {
+    id: "work-1788138919959",
+    category: "cha-personal",
+    title: "무지개",
+    title_en: "rainbow",
+    year: 2026,
+    order: 1788138925766,     
+    thumb: "img/works/work-1788138919959/01.webp",
+    images: ["img/works/work-1788138919959/01.webp","img/works/work-1788138919959/02.webp","img/works/work-1788138919959/03.webp"],
+    tags: [],
+    description: "",
+    description_en: "",
+  },
+  {
     id: "work-1788138846067",
     category: "game",
     title: "드리머의 드림랜드",
