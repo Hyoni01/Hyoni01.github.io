@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hyoni — Illustration</title>
+  <title>Hyoni — Devlog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="icon" href="/img/사진대용.png">
@@ -16,7 +16,7 @@
   <a href="index.html" class="site-hero-logo">
     <img src="img/hero.png" alt="Hyoni" />
   </a>
- 
+
   <nav>
     <div class="nav-center">
       <div class="nav-item">
@@ -53,9 +53,9 @@
         <a href="devlog.html" class="nav-btn" data-kr="개발일지" data-en="Devlog">개발일지</a>
       </div>
       <!-- 낙서장 -->
-   <div class="nav-item">
-     <a href="doodles.html" class="nav-btn" data-kr="낙서장" data-en="Sketchbook">낙서장</a>
-   </div>
+      <div class="nav-item">
+        <a href="doodles.html" class="nav-btn" data-kr="낙서장" data-en="Sketchbook">낙서장</a>
+      </div>
       <div class="nav-item">
         <a href="about.html" class="nav-btn" data-kr="About" data-en="About">About</a>
       </div>
@@ -67,39 +67,30 @@
   </nav>
 
   <div class="page-wrap">
-    <div class="sub-nav">
-      <button class="sub-btn active" data-cat="all"        data-kr="전체"  data-en="All">전체</button>
-      <button class="sub-btn"        data-cat="commission" data-kr="커미션" data-en="Commission">커미션</button>
-      <button class="sub-btn"        data-cat="personal"   data-kr="개인작" data-en="Personal">개인작</button>
-      <button class="sub-btn"        data-cat="commercial" data-kr="상업작" data-en="Commercial">상업작</button>
-    </div>
-    <div id="tag-nav"></div>  <!-- ← 추가 -->
-    <div class="grid-wrap">
-      <div class="work-grid" id="work-grid"></div>
-    </div>
-  </div>
 
-  <div class="lb-overlay" id="lb-overlay">
-    <div class="lb-head">
-      <div class="lb-title" id="lb-title"></div>
-      <div class="lb-tag"   id="lb-tag"></div>
+    <!-- 목록 화면 -->
+    <div id="devlog-list-view">
+      <div id="tag-nav" style="padding-top:1.5rem;"></div>
+      <div class="devlog-wrap">
+        <div class="devlog-list" id="devlog-list"></div>
+        <div class="devlog-pager" id="devlog-pager"></div>
+      </div>
     </div>
-    <div class="lb-scroll" id="lb-scroll"></div>
-    <div id="lb-img-count" style="
-    display:none;
-    text-align:center;
-    color:rgba(255,255,255,0.45);
-    font-family:var(--font-mono);
-    font-size:.7rem;
-    padding:.4rem 0;">
+
+    <!-- 상세 화면 -->
+    <div id="devlog-post-view" style="display:none;">
+      <div class="devlog-wrap">
+        <button class="devlog-back" id="devlog-back"></button>
+        <div class="devlog-post-head">
+          <div class="devlog-post-tag"   id="devlog-post-tag"></div>
+          <h1 class="devlog-post-title"  id="devlog-post-title"></h1>
+          <div class="devlog-post-date"  id="devlog-post-date"></div>
+        </div>
+        <div class="devlog-post-body post-content" id="devlog-post-body"></div>
+        <div class="devlog-post-nav"   id="devlog-post-nav"></div>
+      </div>
     </div>
-    <div class="lb-desc" id="lb-desc"></div>
-    <div class="lb-dots" id="lb-dots"></div>
-    <button class="lb-close" id="lb-close">✕</button>
-    <div class="lb-nav">
-      <button class="lb-nav-btn" id="lb-prev">&#8592;</button>
-      <button class="lb-nav-btn" id="lb-next">&#8594;</button>
-    </div>
+
   </div>
 
   <footer>
@@ -108,20 +99,11 @@
     <a></a>
   </footer>
 
-  <script src="js/works.js"></script>
+  <script src="js/devlog.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/devlog-main.js"></script>
   <script>
-    const PAGE_CATS = ['commission', 'personal', 'commercial'];
-    const initCat   = urlParams.get('cat') || 'all';
-    const initCats  = initCat === 'all' ? PAGE_CATS : [initCat];
-
-    document.querySelectorAll('.sub-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.cat === initCat);
-    });
-
-    renderGrid('#work-grid', initCats);
-    initCatFilter(PAGE_CATS);
-    initTagNav();
+    initDevlog();
   </script>
 </body>
 </html>

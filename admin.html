@@ -4,7 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hyoni Admin</title>
+
+  <!-- Quill 2 — 빌드 없이 CDN 만으로 동작 (cdnjs 에는 2.x dist 가 없어서 jsDelivr 사용) -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+  <!-- 게임 태그 드롭다운을 GAME_LABEL 로 채우려고 로드 (글 목록은 API 로 따로 불러와요) -->
+  <script src="js/devlog.js"></script>
+
   <style>
+    /* 사이트 톤 — css/style.css 의 :root 와 같은 값 */
+    :root {
+      --bg-alt:   #f2f2f2;
+      --ink:      #1A1807;
+      --ink-soft: #888075;
+      --accent:   #358C9A;
+      --border:   rgba(26,24,7,0.09);
+      --radius:   10px;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: sans-serif; background: #f5f5f5; padding: 2rem; color: #222; }
     h1 { font-size: 1.4rem; margin-bottom: 2rem; }
@@ -114,6 +131,61 @@
       border: none; border-radius: 50%;
       width: 22px; height: 22px; cursor: pointer; font-size: 0.75rem;
     }
+    .thumb-preview {
+      width: 140px; aspect-ratio: 4/3; object-fit: cover;
+      border-radius: 8px; margin-top: 0.6rem;
+    }
+
+    /* ── 개발일지 에디터 (Quill snow 테마 위에 사이트 톤만 덧입힘) ── */
+    #devlog-editor-wrap {
+      border: 1px solid #ddd; border-radius: var(--radius);
+      overflow: hidden; position: relative;
+    }
+    .ql-toolbar.ql-snow  { border: none; border-bottom: 1px solid #eee; background: #fafafa; }
+    .ql-container.ql-snow { border: none; font-family: inherit; font-size: 0.92rem; }
+    .ql-editor { min-height: 320px; line-height: 1.8; color: var(--ink); }
+    .ql-editor.ql-blank::before { color: #bbb; font-style: normal; }
+    .ql-editor img { max-width: 100%; height: auto; border-radius: 8px; }
+    .ql-editor blockquote { border-left: 2px solid var(--accent); color: var(--ink-soft); }
+
+    /* 툴바 아이콘 색만 사이트 톤으로 */
+    .ql-snow .ql-stroke  { stroke: var(--ink-soft); }
+    .ql-snow .ql-fill    { fill: var(--ink-soft); }
+    .ql-snow .ql-picker  { color: var(--ink-soft); }
+    .ql-snow.ql-toolbar button:hover .ql-stroke,
+    .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+    .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+    .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke { stroke: var(--accent); }
+    .ql-snow.ql-toolbar button:hover .ql-fill,
+    .ql-snow.ql-toolbar button.ql-active .ql-fill { fill: var(--accent); }
+    .ql-snow.ql-toolbar button:hover,
+    .ql-snow.ql-toolbar button.ql-active,
+    .ql-snow.ql-toolbar .ql-picker-label:hover,
+    .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+    .ql-snow.ql-toolbar .ql-picker-item:hover,
+    .ql-snow.ql-toolbar .ql-picker-item.ql-selected { color: var(--accent); }
+
+    /* 이미지 업로드 중 오버레이 */
+    .editor-busy {
+      display: none; position: absolute; inset: 0; z-index: 5;
+      background: rgba(255,255,255,0.75);
+      align-items: center; justify-content: center;
+      font-size: 0.85rem; color: var(--accent);
+    }
+    .editor-hint { font-size: 0.75rem; color: #999; margin-top: 0.4rem; }
+
+    /* 임시저장 알림 바 */
+    .draft-bar {
+      display: none; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+      background: #fff8e6; border: 1px solid #f0dfae; border-radius: var(--radius);
+      padding: 0.7rem 0.9rem; margin-bottom: 1rem; font-size: 0.82rem; color: #8a6d1f;
+    }
+    .draft-bar button {
+      padding: 0.25em 0.8em; border: 1px solid #ddd; border-radius: 999px;
+      background: #fff; cursor: pointer; font-size: 0.78rem;
+    }
+    .draft-bar button:hover { border-color: var(--accent); color: var(--accent); }
+    .draft-note { font-size: 0.72rem; color: #bbb; text-align: right; min-height: 1.1em; }
   </style>
 </head>
 <body>
@@ -135,6 +207,7 @@
   <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
     <button class="tab-btn active" onclick="switchTab('upload')">업로드</button>
     <button class="tab-btn" onclick="switchTab('manage')">작품 관리</button>
+    <button class="tab-btn" onclick="switchTab('devlog')">개발일지</button>
   </div>
 
   <!-- 업로드 탭 -->
@@ -256,7 +329,7 @@
             <option value="2d-animation">2D 애니메이션</option>
             <option value="3d-animation">3D 애니메이션</option>
             <option value="game">게임</option>
-            <option value="doodle">낙서장</option>
+            <option value="sketchbook">낙서장</option>
           </select>
         </div>
         <div class="field">
@@ -288,6 +361,105 @@
       </div>
     </div>
   </div>
+
+  <!-- 개발일지 탭 -->
+  <div id="tab-devlog" style="display:none;">
+
+    <!-- 글 작성 / 편집 폼 -->
+    <div class="card" style="margin-bottom:1rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+        <span id="devlog-form-title" style="font-size:0.95rem; font-weight:500;">새 글 작성</span>
+        <button onclick="newPost()" style="font-size:0.8rem; padding:0.3em 0.9em; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer;">새 글로 초기화</button>
+      </div>
+
+      <!-- 임시저장 복구 -->
+      <div class="draft-bar" id="devlog-draft-bar">
+        <span>작성 중이던 글이 있어요 (<span id="devlog-draft-time"></span>).</span>
+        <button onclick="restoreDraft()">이어서 쓰기</button>
+        <button onclick="discardDraft()">버리기</button>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>제목 (한국어)</label>
+          <input type="text" id="devlog-title-kr" placeholder="글 제목" />
+        </div>
+        <div class="field">
+          <label>제목 (영어)</label>
+          <input type="text" id="devlog-title-en" placeholder="Post title" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>날짜</label>
+          <input type="date" id="devlog-date" />
+        </div>
+        <div class="field">
+          <label>게임 태그</label>
+          <select id="devlog-game"></select>
+        </div>
+      </div>
+      <p style="font-size:0.75rem; color:#999; margin:-0.5rem 0 1rem;">
+        ※ 목록은 <code>js/devlog.js</code> 의 <code>GAME_LABEL</code> 에서 가져와요. 새 게임을 추가하려면 거기에 한/영 라벨을 먼저 넣어주세요.
+      </p>
+
+      <div class="field">
+        <label>썸네일</label>
+        <div class="drop-zone" id="devlog-thumb-zone">
+          썸네일 이미지를 드래그하거나 클릭
+          <input type="file" id="devlog-thumb-input" accept="image/*" style="display:none" />
+        </div>
+        <div id="devlog-thumb-preview"></div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>미리보기 텍스트 (한국어)</label>
+          <textarea id="devlog-excerpt-kr" placeholder="목록에 보일 요약"></textarea>
+        </div>
+        <div class="field">
+          <label>미리보기 텍스트 (영어)</label>
+          <textarea id="devlog-excerpt-en" placeholder="Preview text"></textarea>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>태그 (입력 후 Enter)</label>
+        <input type="text" id="devlog-tag-input" placeholder="태그 입력 후 Enter" />
+        <div class="tags-input" id="devlog-tags-container"></div>
+      </div>
+
+      <div class="field">
+        <label>본문</label>
+        <div id="devlog-editor-wrap">
+          <div id="devlog-editor"></div>
+          <div class="editor-busy" id="devlog-editor-busy"></div>
+        </div>
+        <p class="editor-hint">
+          툴바의 이미지 버튼(또는 붙여넣기·드래그)으로 넣은 사진은 <b>바로 서버에 업로드</b>돼요. GIF 는 애니메이션 그대로 올라갑니다 (원본 3MB 까지).
+        </p>
+        <p class="draft-note" id="devlog-draft-note"></p>
+      </div>
+
+      <button class="submit-btn" id="devlog-submit-btn" onclick="savePost()">저장</button>
+      <div class="progress-bar" id="devlog-progress-bar">
+        <div class="progress-fill" id="devlog-progress-fill" style="width:0%"></div>
+      </div>
+      <p id="devlog-status"></p>
+      <button class="delete-btn" id="devlog-delete-btn" style="display:none;" onclick="deletePost()">글 삭제</button>
+    </div>
+
+    <!-- 글 목록 -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <span style="font-size:0.85rem; color:#666;">글을 클릭하면 위 폼에서 편집돼요</span>
+        <button onclick="loadPosts()" style="font-size:0.8rem; padding:0.3em 0.9em; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer;">새로고침</button>
+      </div>
+      <div id="posts-list"></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
@@ -315,7 +487,14 @@ function switchTab(tab) {
   document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
   document.getElementById('tab-upload').style.display  = tab === 'upload' ? 'block' : 'none';
   document.getElementById('tab-manage').style.display  = tab === 'manage' ? 'block' : 'none';
+  document.getElementById('tab-devlog').style.display  = tab === 'devlog' ? 'block' : 'none';
   if (tab === 'manage') loadWorks();
+  if (tab === 'devlog') {
+    // 작성 중 내용은 탭을 옮겨도 유지 (첫 진입에만 초기화)
+    if (!devlogInit) { devlogInit = true; initQuill(); newPost(true); }
+    checkDraft();
+    loadPosts();
+  }
 }
 
 /* ── 업로드 탭: 이미지 ── */
@@ -336,12 +515,45 @@ editDropZone.addEventListener('dragleave', () => editDropZone.classList.remove('
 editDropZone.addEventListener('drop', e => { e.preventDefault(); editDropZone.classList.remove('drag-over'); handleFiles(e.dataTransfer.files, true); });
 editFileInput.addEventListener('change', e => handleFiles(e.target.files, true));
 
-function handleFiles(files, isEdit) {
-  Array.from(files).forEach(file => {
+/* ── 이미지 1장 처리 ──
+   GIF 는 canvas 로 그리면 첫 프레임만 남아 애니메이션이 사라져요.
+   그래서 GIF 만 변환 없이 원본 base64 를 그대로 씁니다.
+   대신 원본을 그대로 보내니까 용량 제한을 먼저 확인해요.
+   (Vercel API Route body 제한 4.5MB, base64 는 약 1.33배로 늘어남) */
+const MAX_GIF_BYTES    = 3 * 1024 * 1024;   // 원본 3MB → base64 약 4MB
+const MAX_BASE64_BYTES = 4 * 1024 * 1024;   // 전송 직전 최종 안전선
+
+function processFile(file) {
+  return new Promise((resolve, reject) => {
+    const isGif = file.type === 'image/gif';
+
+    if (isGif && file.size > MAX_GIF_BYTES) {
+      reject(new Error(`"${file.name}" 은 ${(file.size / 1024 / 1024).toFixed(1)}MB 예요.\n`
+        + `GIF 는 변환 없이 원본 그대로 올라가서 3MB 까지만 가능해요.\n`
+        + `프레임 수나 크기를 줄여서 다시 올려주세요.`));
+      return;
+    }
+
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onerror = () => reject(new Error(`"${file.name}" 을 읽을 수 없어요.`));
+    reader.onload  = e => {
+      const dataUrl = e.target.result;
+
+      // GIF → 원본 그대로 (애니메이션 유지)
+      if (isGif) {
+        const base64 = dataUrl.split(',')[1];
+        if (base64.length > MAX_BASE64_BYTES) {
+          reject(new Error(`"${file.name}" 은 서버로 보내기엔 너무 커요. 3MB 이하로 줄여주세요.`));
+          return;
+        }
+        resolve({ base64, ext: 'gif', preview: dataUrl });
+        return;
+      }
+
+      // 그 외 → 2000px 로 줄여서 webp 변환
       const img = new Image();
-      img.onload = () => {
+      img.onerror = () => reject(new Error(`"${file.name}" 은 이미지가 아닌 것 같아요.`));
+      img.onload  = () => {
         const canvas = document.createElement('canvas');
         const MAX = 2000;
         let w = img.width, h = img.height;
@@ -353,19 +565,29 @@ function handleFiles(files, isEdit) {
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         const webpDataUrl = canvas.toDataURL('image/webp', 0.82);
         const base64 = webpDataUrl.split(',')[1];
-        const id = Date.now() + Math.random();
-        if (isEdit) {
-          editImages.push({ base64, ext: 'webp', id, preview: webpDataUrl });
-          renderEditPreviews();
-        } else {
-          images.push({ base64, ext: 'webp', id, preview: webpDataUrl });
-          renderPreviews();
+        if (base64.length > MAX_BASE64_BYTES) {
+          reject(new Error(`"${file.name}" 은 변환 후에도 너무 커요. 크기를 줄여주세요.`));
+          return;
         }
+        resolve({ base64, ext: 'webp', preview: webpDataUrl });
       };
-      img.src = e.target.result;
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
   });
+}
+
+async function handleFiles(files, isEdit) {
+  for (const file of Array.from(files)) {
+    try {
+      const item = await processFile(file);
+      item.id = Date.now() + Math.random();
+      if (isEdit) { editImages.push(item); renderEditPreviews(); }
+      else        { images.push(item);     renderPreviews(); }
+    } catch (err) {
+      alert(err.message);
+    }
+  }
 }
 
 function renderPreviews() {
@@ -631,6 +853,539 @@ async function deleteWork() {
     if (!res.ok) throw new Error(data.error);
     closeEdit();
     loadWorks();
+  } catch (err) {
+    status.textContent = '✗ ' + err.message;
+  }
+}
+
+/* =====================================================
+   개발일지
+   ===================================================== */
+let devlogInit    = false;   // 탭 첫 진입 여부
+let devlogPostId  = null;    // 글 ID — 이미지 업로드 경로용으로 에디터 열 때 미리 발급
+let devlogThumb   = null;    // 새로 고른 썸네일 {base64, ext, preview}
+let devlogEditing = null;    // 편집 중인 글 (null = 새 글)
+let devlogTags    = [];      // 자유 태그
+let devlogRemoved = [];      // 저장할 때 삭제할 이미지 경로
+let quill         = null;    // Quill 인스턴스
+
+const DRAFT_KEY = 'hyoni-devlog-draft';   // 임시저장 localStorage 키
+
+function esc(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ── 썸네일 ── */
+const devlogThumbZone  = document.getElementById('devlog-thumb-zone');
+const devlogThumbInput = document.getElementById('devlog-thumb-input');
+devlogThumbZone.addEventListener('click', () => devlogThumbInput.click());
+devlogThumbZone.addEventListener('dragover',  e => { e.preventDefault(); devlogThumbZone.classList.add('drag-over'); });
+devlogThumbZone.addEventListener('dragleave', () => devlogThumbZone.classList.remove('drag-over'));
+devlogThumbZone.addEventListener('drop', e => {
+  e.preventDefault(); devlogThumbZone.classList.remove('drag-over');
+  handleThumbFile(e.dataTransfer.files);
+});
+devlogThumbInput.addEventListener('change', e => { handleThumbFile(e.target.files); e.target.value = ''; });
+
+async function handleThumbFile(files) {
+  if (!files || !files[0]) return;
+  try {
+    devlogThumb = await processFile(files[0]);
+    renderThumbPreview();
+  } catch (err) { alert(err.message); }
+}
+
+function renderThumbPreview() {
+  const src = devlogThumb ? devlogThumb.preview
+            : (devlogEditing && devlogEditing.thumb ? '/' + devlogEditing.thumb : '');
+  document.getElementById('devlog-thumb-preview').innerHTML =
+    src ? `<img class="thumb-preview" src="${src}" />` : '';
+}
+
+/* =====================================================
+   Quill 에디터
+   ===================================================== */
+function initQuill() {
+  if (quill) return;
+
+  // 정렬을 class(ql-align-*) 대신 inline style 로 출력해요.
+  // devlog.html 은 Quill CSS 를 안 불러오니까 style 이어야 그대로 보입니다.
+  Quill.register(Quill.import('attributors/style/align'), true);
+  Quill.register(Quill.import('attributors/style/direction'), true);
+
+  // 구분선(<hr>) — Quill 기본 포맷에 없어서 직접 등록
+  const BlockEmbed = Quill.import('blots/block/embed');
+  class DividerBlot extends BlockEmbed {}
+  DividerBlot.blotName = 'divider';
+  DividerBlot.tagName  = 'hr';
+  Quill.register(DividerBlot);
+  Quill.import('ui/icons').divider =
+    '<svg viewBox="0 0 18 18"><line class="ql-stroke" x1="3" x2="15" y1="9" y2="9"></line></svg>';
+
+  quill = new Quill('#devlog-editor', {
+    theme: 'snow',
+    placeholder: '본문을 작성해요…',
+    modules: {
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, false] }],           // 대제목 / 중제목 / 소제목 / 본문
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ color: [] }, { background: [] }],       // 글자색 / 형광펜
+          [{ align: [] }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['blockquote', 'divider'],
+          ['link', 'image'],
+          ['clean'],                                 // 서식 지우기
+        ],
+        handlers: {
+          image: pickEditorImage,
+          divider() {
+            const range = this.quill.getSelection(true);
+            this.quill.insertText(range.index, '\n', Quill.sources.USER);
+            this.quill.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER);
+            this.quill.setSelection(range.index + 2, Quill.sources.SILENT);
+          },
+        },
+      },
+      // 붙여넣기·드래그로 들어온 이미지도 base64 대신 업로드로 처리
+      uploader: {
+        mimetypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+        handler(range, files) { Array.from(files).forEach(f => insertEditorImage(f)); },
+      },
+    },
+  });
+
+  quill.on('text-change', scheduleDraftSave);
+}
+
+/* ── 이미지 삽입: 업로드 먼저, 돌려받은 경로를 본문에 ── */
+function pickEditorImage() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => { if (input.files && input.files[0]) insertEditorImage(input.files[0]); };
+  input.click();
+}
+
+async function insertEditorImage(file) {
+  if (!devlogPostId) devlogPostId = `post-${Date.now()}`;
+
+  // 비활성화하기 전에 커서 위치를 먼저 잡아둬요
+  const range = quill.getSelection(true) || { index: Math.max(0, quill.getLength() - 1) };
+  setEditorBusy(true, '이미지 업로드 중...');
+
+  let path = null, error = null;
+  try {
+    const item = await processFile(file);   // GIF 는 원본 그대로, 나머지는 webp 변환
+    const name = String(nextEditorImageIndex()).padStart(2, '0');
+    path = await uploadDevlogImage(`img/devlog/${devlogPostId}`, name, item);
+  } catch (err) {
+    error = err;
+  }
+  setEditorBusy(false);   // 읽기 전용 상태에선 USER 소스 삽입이 무시돼서 먼저 풀어줘요
+
+  if (error) { alert(error.message); return; }
+  quill.insertEmbed(range.index, 'image', path, Quill.sources.USER);
+  quill.setSelection(range.index + 1, Quill.sources.SILENT);
+  scheduleDraftSave();
+}
+
+/* 이 글 폴더에서 이미 쓰인 번호 다음부터 (편집 중 덮어쓰기 방지) */
+function nextEditorImageIndex() {
+  let max = 0;
+  const html = quill ? quill.root.innerHTML : '';
+  const re = new RegExp(`img/devlog/${devlogPostId}/(\\d+)\\.`, 'g');
+  let m;
+  while ((m = re.exec(html)) !== null) max = Math.max(max, parseInt(m[1], 10));
+  return max + 1;
+}
+
+function setEditorBusy(on, msg) {
+  const el = document.getElementById('devlog-editor-busy');
+  el.textContent = msg || '';
+  el.style.display = on ? 'flex' : 'none';
+  if (quill) quill.enable(!on);
+  document.getElementById('devlog-submit-btn').disabled = on;
+}
+
+/* ── Quill DOM → 저장용 HTML ──
+   - 리스트에 끼워넣는 ql-ui 스팬 제거
+   - Quill 2 는 불릿도 <ol><li data-list="bullet"> 로 만들어서 <ul> 로 되돌림
+   - 끝의 빈 문단 정리 */
+function normalizeEditorHTML(html) {
+  const doc  = new DOMParser().parseFromString(`<body><div id="r">${html}</div></body>`, 'text/html');
+  const root = doc.getElementById('r');
+
+  root.querySelectorAll('span.ql-ui').forEach(el => el.remove());
+
+  root.querySelectorAll('ol').forEach(ol => {
+    const items = Array.from(ol.children);
+    if (items.length === 0) return;
+
+    // data-list 종류가 바뀌는 지점마다 ul / ol 로 나눠 담기
+    const groups = [];
+    items.forEach(li => {
+      const kind = li.getAttribute('data-list') === 'bullet' ? 'ul' : 'ol';
+      const last = groups[groups.length - 1];
+      if (last && last.kind === kind) last.items.push(li);
+      else groups.push({ kind, items: [li] });
+    });
+
+    const frag = doc.createDocumentFragment();
+    groups.forEach(g => {
+      const listEl = doc.createElement(g.kind);
+      g.items.forEach(li => { li.removeAttribute('data-list'); listEl.appendChild(li); });
+      frag.appendChild(listEl);
+    });
+    ol.replaceWith(frag);
+  });
+
+  root.querySelectorAll('li[data-list]').forEach(li => li.removeAttribute('data-list'));
+  root.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+
+  let last = root.lastElementChild;
+  while (last && last.tagName === 'P' && last.innerHTML.replace(/<br\s*\/?>/gi, '').trim() === '') {
+    last.remove();
+    last = root.lastElementChild;
+  }
+  return root.innerHTML.trim();
+}
+
+/* 예전 블록 배열 글을 에디터에 올리기 위한 변환 */
+function blocksToHTML(content) {
+  if (!Array.isArray(content)) return content || '';
+  return content.map(b => b.type === 'text'
+    ? `<p>${esc(b.value || '').replace(/\n/g, '<br>')}</p>`
+    : `<p><img src="${esc(b.src || '')}"></p>` + (b.caption ? `<p><em>${esc(b.caption)}</em></p>` : '')
+  ).join('');
+}
+
+/* ── 게임 태그 드롭다운 (GAME_LABEL 기준) ── */
+function fillGameOptions(selected) {
+  const sel    = document.getElementById('devlog-game');
+  const labels = (typeof GAME_LABEL !== 'undefined' && GAME_LABEL.kr) ? GAME_LABEL.kr : {};
+  const keys   = Object.keys(labels);
+
+  sel.innerHTML = '<option value="">(게임 없음)</option>'
+    + keys.map(k => `<option value="${esc(k)}">${esc(labels[k])} — ${esc(k)}</option>`).join('');
+
+  // 글에는 있는데 GAME_LABEL 에 아직 없는 key 도 잃지 않게
+  if (selected && !keys.includes(selected)) {
+    sel.insertAdjacentHTML('beforeend',
+      `<option value="${esc(selected)}">${esc(selected)} (라벨 미등록)</option>`);
+  }
+  sel.value = selected || '';
+}
+
+/* ── 자유 태그 (작품 업로드 탭과 같은 방식) ── */
+document.getElementById('devlog-tag-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const val = e.target.value.trim();
+    if (val && !devlogTags.includes(val)) { devlogTags.push(val); renderDevlogTags(); scheduleDraftSave(); }
+    e.target.value = '';
+  }
+});
+function renderDevlogTags() {
+  document.getElementById('devlog-tags-container').innerHTML = devlogTags.map((t, i) => `
+    <span class="tag">${esc(t)} <button onclick="removeDevlogTag(${i})">✕</button></span>`).join('');
+}
+function removeDevlogTag(i) { devlogTags.splice(i, 1); renderDevlogTags(); scheduleDraftSave(); }
+
+/* ── 임시저장 (새 글 작성 중에만) ── */
+let draftTimer = null;
+function scheduleDraftSave() { clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft, 800); }
+
+function saveDraft() {
+  if (devlogEditing) return;   // 이미 올라간 글 편집은 임시저장하지 않아요 (원본은 서버에 있으니까)
+
+  const content = quill ? quill.root.innerHTML : '';
+  const title   = document.getElementById('devlog-title-kr').value.trim();
+  if (!title && !content.replace(/<[^>]*>/g, '').trim()) { clearDraft(); return; }
+
+  const draft = {
+    postId: devlogPostId,
+    title,
+    title_en:   document.getElementById('devlog-title-en').value,
+    date:       document.getElementById('devlog-date').value,
+    game:       document.getElementById('devlog-game').value,
+    excerpt:    document.getElementById('devlog-excerpt-kr').value,
+    excerpt_en: document.getElementById('devlog-excerpt-en').value,
+    tags: devlogTags,
+    content,                      // 썸네일은 용량이 커서 임시저장에 안 담아요
+    savedAt: Date.now(),
+  };
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    setDraftNote(`임시저장됨 ${new Date().toLocaleTimeString('ko-KR')}`);
+  } catch (e) {
+    setDraftNote('임시저장 실패 (브라우저 저장 공간 부족)');
+  }
+}
+
+function setDraftNote(msg) { document.getElementById('devlog-draft-note').textContent = msg; }
+function clearDraft() { localStorage.removeItem(DRAFT_KEY); setDraftNote(''); }
+
+function checkDraft() {
+  const bar = document.getElementById('devlog-draft-bar');
+  const raw = localStorage.getItem(DRAFT_KEY);
+  if (!raw) { bar.style.display = 'none'; return; }
+
+  let draft;
+  try { draft = JSON.parse(raw); }
+  catch (e) { clearDraft(); bar.style.display = 'none'; return; }
+
+  document.getElementById('devlog-draft-time').textContent =
+    new Date(draft.savedAt).toLocaleString('ko-KR');
+  bar.style.display = 'flex';
+}
+
+function restoreDraft() {
+  const raw = localStorage.getItem(DRAFT_KEY);
+  if (!raw) return;
+  const draft = JSON.parse(raw);
+
+  newPost(true);   // 폼만 비우고 임시저장은 유지
+  devlogPostId = draft.postId || devlogPostId;
+  document.getElementById('devlog-title-kr').value   = draft.title || '';
+  document.getElementById('devlog-title-en').value   = draft.title_en || '';
+  document.getElementById('devlog-date').value       = draft.date || '';
+  document.getElementById('devlog-excerpt-kr').value = draft.excerpt || '';
+  document.getElementById('devlog-excerpt-en').value = draft.excerpt_en || '';
+  fillGameOptions(draft.game || '');
+
+  devlogTags = draft.tags || [];
+  renderDevlogTags();
+  quill.clipboard.dangerouslyPasteHTML(draft.content || '');
+
+  document.getElementById('devlog-draft-bar').style.display = 'none';
+  setDraftNote('임시저장에서 복구했어요.');
+}
+
+function discardDraft() {
+  if (!confirm('임시저장된 내용을 버릴까요?')) return;
+  clearDraft();
+  document.getElementById('devlog-draft-bar').style.display = 'none';
+}
+
+/* 폼 입력도 임시저장에 반영 */
+['devlog-title-kr','devlog-title-en','devlog-date','devlog-game','devlog-excerpt-kr','devlog-excerpt-en']
+  .forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input',  scheduleDraftSave);
+    el.addEventListener('change', scheduleDraftSave);
+  });
+
+/* ── 폼 초기화 (새 글) ──
+   keepDraft=true 면 임시저장은 지우지 않아요 (복구 직전에 씁니다) */
+function newPost(keepDraft) {
+  devlogEditing = null;
+  devlogThumb   = null;
+  devlogTags    = [];
+  devlogRemoved = [];
+  devlogPostId  = `post-${Date.now()}`;   // 이미지 업로드 경로를 미리 확보
+
+  document.getElementById('devlog-form-title').textContent = '새 글 작성';
+  ['devlog-title-kr','devlog-title-en','devlog-excerpt-kr','devlog-excerpt-en']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('devlog-date').value = new Date().toISOString().slice(0, 10);
+  fillGameOptions('');
+  document.getElementById('devlog-delete-btn').style.display = 'none';
+  document.getElementById('devlog-status').textContent = '';
+  document.getElementById('devlog-progress-bar').style.display = 'none';
+
+  if (quill) quill.setContents([]);
+  renderDevlogTags();
+  renderThumbPreview();
+  if (keepDraft !== true) clearDraft();
+}
+
+/* ── 글 목록 ── */
+async function loadPosts() {
+  const list = document.getElementById('posts-list');
+  list.innerHTML = '<p style="color:#999;font-size:0.85rem;">불러오는 중...</p>';
+  try {
+    const res  = await fetch('/api/admin/devlog-list', { headers: { 'x-admin-password': password } });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    window._posts = data.posts;
+
+    if (data.posts.length === 0) {
+      list.innerHTML = '<p style="color:#999;font-size:0.85rem;">글이 없어요.</p>'; return;
+    }
+    list.innerHTML = data.posts.map(p => `
+      <div class="work-row" onclick="openPostEdit('${p.id}')">
+        <div class="work-row-thumb">
+          ${p.thumb ? `<img src="/${p.thumb}" />` : '<div class="no-thumb"></div>'}
+        </div>
+        <div class="work-row-info">
+          <div class="work-row-title">${esc(p.title)}</div>
+          <div class="work-row-meta">${esc(p.game || '')} · ${esc(p.date || '')}</div>
+        </div>
+        <div class="work-row-arrow">›</div>
+      </div>`).join('');
+  } catch (err) {
+    list.innerHTML = `<p style="color:#e55;font-size:0.85rem;">✗ ${err.message}</p>`;
+  }
+}
+
+/* ── 글 편집 열기 ── */
+function openPostEdit(id) {
+  const post = (window._posts || []).find(p => p.id === id);
+  if (!post) return;
+
+  devlogEditing = post;
+  devlogPostId  = post.id;
+  devlogThumb   = null;
+  devlogRemoved = [];
+  devlogTags    = [...(post.tags || [])];
+
+  document.getElementById('devlog-form-title').textContent = `글 편집 — ${post.id}`;
+  document.getElementById('devlog-title-kr').value   = post.title || '';
+  document.getElementById('devlog-title-en').value   = post.title_en || '';
+  document.getElementById('devlog-date').value       = post.date || '';
+  document.getElementById('devlog-excerpt-kr').value = post.excerpt || '';
+  document.getElementById('devlog-excerpt-en').value = post.excerpt_en || '';
+  fillGameOptions(post.game || '');
+  document.getElementById('devlog-delete-btn').style.display = 'block';
+  document.getElementById('devlog-status').textContent = '';
+  document.getElementById('devlog-progress-bar').style.display = 'none';
+
+  // 예전 블록 배열 글도 HTML 로 바꿔서 그대로 편집할 수 있어요
+  quill.setContents([]);
+  quill.clipboard.dangerouslyPasteHTML(blocksToHTML(post.content));
+
+  renderDevlogTags();
+  renderThumbPreview();
+  setDraftNote('');
+  window.scrollTo(0, 0);
+}
+
+/* ── 이미지 1장 업로드 ── */
+async function uploadDevlogImage(folder, name, item) {
+  const res = await fetch('/api/admin/upload-image', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password, folder, name, base64: item.base64, ext: item.ext })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data.path;
+}
+
+/* ── 저장 (새 글 = upload / 편집 = update) ── */
+async function savePost() {
+  const status = document.getElementById('devlog-status');
+  const btn    = document.getElementById('devlog-submit-btn');
+
+  const titleKr = document.getElementById('devlog-title-kr').value.trim();
+  const date    = document.getElementById('devlog-date').value;
+  const game    = document.getElementById('devlog-game').value;
+  const content = normalizeEditorHTML(quill.root.innerHTML);
+  const plain   = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+  if (!titleKr || !date) {
+    status.textContent = '제목과 날짜는 필수예요.'; status.style.color = '#e55'; return;
+  }
+  if (!plain && !/<img/i.test(content)) {
+    status.textContent = '본문이 비어 있어요.'; status.style.color = '#e55'; return;
+  }
+  // 커스텀 핸들러를 우회해서 들어온 base64 이미지가 있으면 커밋이 터지니까 막아요
+  if (/<img[^>]+src\s*=\s*["']data:/i.test(content)) {
+    status.textContent = '본문에 base64 이미지가 있어요. 이미지는 툴바의 이미지 버튼으로 다시 넣어주세요.';
+    status.style.color = '#e55'; return;
+  }
+
+  const isNew  = !devlogEditing;
+  const postId = devlogPostId;             // 에디터를 열 때 이미 발급해뒀어요
+  const folder = `img/devlog/${postId}`;
+
+  btn.disabled = true;
+  status.style.color = '#358C9A';
+
+  const total = (devlogThumb ? 1 : 0) + 1;
+  let done = 0;
+
+  try {
+    // 1. 썸네일 (본문 이미지는 에디터에서 이미 업로드됨)
+    let thumbPath = isNew ? '' : (devlogEditing.thumb || '');
+    if (devlogThumb) {
+      status.textContent = '썸네일 업로드 중...';
+      setProgress('devlog-progress', done, total);
+      thumbPath = await uploadDevlogImage(folder, 'thumb', devlogThumb);
+      done++;
+    }
+
+    // 2. devlog.js 갱신
+    status.textContent = 'devlog.js 업데이트 중...';
+    setProgress('devlog-progress', done, total);
+
+    const res = await fetch(isNew ? '/api/admin/devlog-upload' : '/api/admin/devlog-update', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, post: {
+        id: postId,
+        game,
+        title: titleKr,
+        title_en: document.getElementById('devlog-title-en').value.trim(),
+        date,
+        tags: devlogTags,
+        thumb: thumbPath,
+        // 미리보기를 비워두면 본문에서 자동으로 뽑아요
+        excerpt:    document.getElementById('devlog-excerpt-kr').value.trim() || plain.slice(0, 120),
+        excerpt_en: document.getElementById('devlog-excerpt-en').value.trim(),
+        content,
+        removedImages: devlogRemoved,
+      }})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    setProgress('devlog-progress', total, total);
+    status.textContent = '✓ 저장 완료! Vercel이 자동 재배포돼요.';
+    devlogRemoved = [];
+    devlogThumb   = null;
+    clearDraft();
+    if (isNew) newPost();
+    loadPosts();
+  } catch (err) {
+    status.textContent = '✗ ' + err.message; status.style.color = '#e55';
+    document.getElementById('devlog-progress-bar').style.display = 'none';
+  }
+  btn.disabled = false; btn.textContent = '저장';
+}
+
+/* ── 글 삭제 ── */
+async function deletePost() {
+  if (!devlogEditing) return;
+  if (!confirm(`"${devlogEditing.title}" 글을 삭제할까요? 이미지 파일도 함께 삭제돼요.`)) return;
+
+  const status = document.getElementById('devlog-status');
+  status.style.color = '#e55';
+  status.textContent = '삭제 중...';
+
+  // 썸네일 + 본문 이미지 (예전 블록 배열 / 새 HTML 둘 다 대응)
+  const images = [];
+  if (devlogEditing.thumb) images.push(devlogEditing.thumb);
+  const content = devlogEditing.content;
+  if (Array.isArray(content)) {
+    content.forEach(b => { if (b.src) images.push(b.src); });
+  } else {
+    const re = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi;
+    let m;
+    while ((m = re.exec(String(content || ''))) !== null) images.push(m[1].replace(/^\//, ''));
+  }
+
+  try {
+    const res = await fetch('/api/admin/devlog-delete', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, postId: devlogEditing.id, images })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    newPost();
+    loadPosts();
   } catch (err) {
     status.textContent = '✗ ' + err.message;
   }
