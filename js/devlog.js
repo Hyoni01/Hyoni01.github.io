@@ -21,8 +21,8 @@
 
 /* 게임 태그 라벨 — 새 게임을 추가하면 여기에도 넣어주세요 */
 const GAME_LABEL = {
-  kr: { 'project-a': '프로젝트 A' },
-  en: { 'project-a': 'Project A' },
+  kr: { 'DDS': '드리머의 드림스쿨' },
+  en: { 'DDS': 'Dreamers Dream School' },
 };
 
 const POSTS = [
